@@ -48,6 +48,18 @@ public class TicketController {
 
     }
 
+    @PostMapping("/sendEMail")
+    public ResponseEntity sendMail(){
+        String result = null;
+        try {
+            result = ticketService.sendEMail();
+            return new ResponseEntity<>(result,HttpStatus.ACCEPTED);
+        } catch (MessagingException e) {
+            String response = e.getMessage();
+            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 
 }

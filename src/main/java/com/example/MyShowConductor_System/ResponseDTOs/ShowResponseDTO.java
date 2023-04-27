@@ -22,6 +22,8 @@ public class ShowResponseDTO {
      List<ScreenTypeEnum> screenTypeEnums = new ArrayList<>();
     private String movieName;
     private String theatreName;
+    //showseatlist
+    //ticketloist
 //    private int classicSeatPrice;
 //    private int premiumSeatPrice;
 

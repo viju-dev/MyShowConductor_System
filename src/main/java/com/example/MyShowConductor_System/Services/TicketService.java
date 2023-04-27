@@ -9,16 +9,28 @@ import com.example.MyShowConductor_System.Repositories.TicketRepository;
 import com.example.MyShowConductor_System.Repositories.UserRepository;
 import com.example.MyShowConductor_System.ResponseDTOs.TicketResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
 import javax.mail.MessagingException;
+import javax.mail.Transport;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import javax.mail.internet.MimeMultipart;
+import javax.sql.DataSource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 public class TicketService {
@@ -32,6 +44,9 @@ public class TicketService {
     ShowRepository showRepository;
     @Autowired
     JavaMailSender javaMailSender;
+
+    @Autowired
+    MailService mailService;
 
 
     public List<TicketResponseDTO> GetAllByUser(int userId) {
@@ -69,13 +84,13 @@ public class TicketService {
                     if(!seat.isBooked()){
                         System.out.println(seat.isBooked()) ;
                         confirmSeats += seat.getSeatNo()+",";
-                        seat.setBooked(true);
+                        seat.setBooked(true); //when that get added in show list that time updated only
                         totalPrice += seat.getPrice();
                         seat.setBookedAt(new Date());
                         seatList.add(seat);
                     }
                     else {
-                        throw new RuntimeException("Seat is Not Available");
+                        throw new RuntimeException("Seat with no "+ seat.getSeatNo()+" is Not Available");
                     }
                 }
 //                else {
@@ -90,22 +105,22 @@ public class TicketService {
         ticket.setBookedSeats(confirmSeats);
         ticket.setTotalAmount(totalPrice);
 
-        show.setShowSeatList(seatList);
+
+//        show.setShowSeatList(seatList);//recheck we are setting or adding ???????????????
+//        show.getShowSeatList().addAll(seatList);
+
         show.getTicketList().add(ticket);
         showRepository.save(show); //no need to save tickets
 //        ticketRepository.save(ticket);
 
-
-        String mail = ticket.getUser().getEmail();
-        String text = "<p>Hey,"+"<b>"+ticket.getUser().getName()+"</b></p>"+"<p> Your ticket for "+ticket.getMovieName()+" with seats <b>"+ticket.getBookedSeats()+"</b> have been Booked SuccessFully...! </p>";
-        String subject = "Your Tickets";//Ticket Confirmation
-        sendMail(mail,text,subject);
+        mailService.sendBookingMail(ticket, show);
         return "Tickets booked Succefully";
 
     }
 
     public String deleteById(String ticketId) throws MessagingException {
         Ticket ticket = ticketRepository.findByTicketId(ticketId);
+        int totalPrice = ticket.getTotalAmount();
         String seats = ticket.getBookedSeats();
         Show show = ticket.getShow();
         for (ShowSeat showSeat:show.getShowSeatList()){
@@ -115,15 +130,9 @@ public class TicketService {
                 }
             }
         }
-        String mail = ticket.getUser().getEmail();
-        String text = "Hey,"+ticket.getUser().getName()+" your ticket for "+ticket.getMovieName()+" with seats "+ticket.getBookedSeats()+" have been Cancelled SuccessFully...!";
-        String subject = "Ticket Cancellation";
 
         ticketRepository.deleteById(ticket.getId());
-
-
-        sendMail(mail,text,subject);
-
+        mailService.sendCancellationMail(ticket);
         return "Ticket Cancelled SuccessFully";
     }
 
@@ -135,10 +144,28 @@ public class TicketService {
         MimeMessageHelper mimeMessageHelper=new MimeMessageHelper(mimeMessage,true);
         mimeMessageHelper.setFrom("myshowconductor@gmail.com");
         mimeMessageHelper.setTo(email);
-        mimeMessageHelper.setText(text,true);
+//        mimeMessageHelper.setText("<h1>Hello</h1><img src='cid:image'>",true);
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+        helper.setText(text,true);
 //        mimeMessageHelper.setText("my text <img src='cid:myLogo'>", true);
         mimeMessageHelper.setSubject(subject);
 
+        FileSystemResource res = null;
+        try {
+            res = new FileSystemResource((new ClassPathResource("/images/myShowlogoGrey.png").getFile()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        helper.addInline("image",res);
+
         javaMailSender.send(mimeMessage);
+    }
+
+    public String sendEMail() throws MessagingException {
+        String email = "rvdorugade@gmail.com";
+        String text = "<img src='/resources/reports/images/myShowlogoGrey.png' width='200' height='120'>";
+        String subject="Checking images";
+        sendMail(email,text,subject);
+        return  "mail sent successfully";
     }
 }

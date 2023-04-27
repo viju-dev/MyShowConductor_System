@@ -68,4 +68,5 @@ public class ShowController {
         return new ResponseEntity<>(showList,HttpStatus.FOUND);
     }
 
+//    @GetMapping("/GetAvailableSeatsByShowAnd")
 }

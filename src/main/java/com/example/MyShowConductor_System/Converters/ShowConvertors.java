@@ -68,6 +68,8 @@ public class ShowConvertors {
             .showDate(show.getShowDate())
             .showTime(show.getShowTime())
             .screenTypeEnums(enumList)
+            .movieName(show.getMovie().getMovieName())
+            .theatreName(show.getTheatre().getName())
             .build();
         return showResponseDTO;
     }
