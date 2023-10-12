@@ -20,6 +20,8 @@ public class TicketConvertors {
     }
     public static TicketResponseDTO EntityToResponse(Ticket ticket){
         TicketResponseDTO ticketResponseDTO = TicketResponseDTO.builder()
+//                .transactionId(ticket.getTransactionId())
+//                .status(ticket.isStatus())
                 .ticketId(ticket.getTicketId())
                 .theaterName(ticket.getTheaterName())
                 .showDate(ticket.getShowDate())

@@ -72,6 +72,9 @@ public class TicketService {
         ticket.setShowTime(show.getShowTime());
 
         ticket.setTicketId(UUID.randomUUID().toString());
+//        ticket.setTransactionId(UUID.randomUUID().toString());
+//        ticket.setStatus(true);
+
         String confirmSeats = "";
         List<ShowSeat> seatList = new ArrayList<>();
         int totalPrice = 0;

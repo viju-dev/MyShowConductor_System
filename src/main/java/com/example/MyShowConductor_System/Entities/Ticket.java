@@ -25,6 +25,8 @@ public class Ticket {
     private LocalDate showDate;
     private LocalTime showTime;
     private int totalAmount;
+//    private String transactionId = UUID.randomUUID().toString();
+//    private boolean status;
     private String ticketId = UUID.randomUUID().toString();
     private String theaterName;
     private String bookedSeats;

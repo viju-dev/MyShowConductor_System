@@ -18,6 +18,8 @@ public class TicketResponseDTO {
     private LocalDate showDate;
     private LocalTime showTime;
     private int totalAmount;
+//    private String transactionId;
+//    private boolean status;
     private String ticketId;
     private String theaterName;
     private String bookedSeats;
