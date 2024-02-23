@@ -103,7 +103,7 @@ public class AuthController {
         }
 
         // Invoke the userService to create the user
-//        UserResponseDTO user1 = userService.createUser(user);
+
         UserResponseDTO user1 = userService.createUser(user);
         // returned userResponseDto
         return new ResponseEntity<>(user1,HttpStatus.CREATED);
