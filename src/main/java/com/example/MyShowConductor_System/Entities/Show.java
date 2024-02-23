@@ -26,8 +26,11 @@ public class Show {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
     private LocalDate showDate;
+    @Column(nullable = false)
     private LocalTime showTime;
+
     @CreationTimestamp
     private Date createdOn;
 
@@ -36,7 +39,8 @@ public class Show {
 
 //    @Enumerated(EnumType.STRING)
 //    private ScreenTypeEnum screenType;
-    private String screenType;
+    @Column(nullable = false)
+    private String formats;
 
     //Mapping Show -> Theatre
     @ManyToOne

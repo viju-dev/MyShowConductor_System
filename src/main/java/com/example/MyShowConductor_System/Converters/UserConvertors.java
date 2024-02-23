@@ -2,6 +2,7 @@ package com.example.MyShowConductor_System.Converters;
 
 import com.example.MyShowConductor_System.EntryDTOs.UserEntryDTO;
 import com.example.MyShowConductor_System.Entities.User;
+import com.example.MyShowConductor_System.ResponseDTOs.UserResponseDTO;
 
 public class UserConvertors {
     public static User EntryToEntity(UserEntryDTO userEntryDTO){
@@ -15,5 +16,18 @@ public class UserConvertors {
                 .build();
         //                .location(userEntryDTO.getLocation())
         return user;
+    }
+
+    public static UserResponseDTO EntityToResponse(User user){
+        UserResponseDTO user1 = UserResponseDTO.builder()
+                .name(user.getName())
+                .age(user.getAge())
+                .gender(user.getGender())
+                .mobNo(user.getMobNo())
+                .email(user.getEmail())
+                .address(user.getAddress())
+                .build();
+        //                .location(userEntryDTO.getLocation())
+        return user1;
     }
 }

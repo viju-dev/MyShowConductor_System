@@ -1,7 +1,7 @@
 package com.example.MyShowConductor_System.Converters;
 
 import com.example.MyShowConductor_System.EntryDTOs.ShowEntryDTO;
-import com.example.MyShowConductor_System.Enums.ScreenTypeEnum;
+import com.example.MyShowConductor_System.Enums.FormatEnum;
 import com.example.MyShowConductor_System.Entities.Show;
 import com.example.MyShowConductor_System.ResponseDTOs.ShowResponseDTO;
 
@@ -30,13 +30,13 @@ public class ShowConvertors {
 
 
         String screenType ="";
-        for (ScreenTypeEnum str:showEntryDTO.getScreenType()){ //converting languageEnum to Language string
+        for (FormatEnum str:showEntryDTO.getFormats()){ //converting languageEnum to Language string
             screenType += str.name()+",";
 //            lang.concat(str.name()+",");
         }
         Show show = Show.builder().showDate(showEntryDTO.getShowDate())
                 .showTime(showEntryDTO.getShowTime())
-                .screenType(screenType)
+                .formats(screenType)
                 .build();
         return show;
     }
@@ -58,17 +58,17 @@ public class ShowConvertors {
 //        System.out.println(screen);
 //
 //        System.out.println(screen);
-        String screenEnum = show.getScreenType();
-        List<ScreenTypeEnum> enumList = new ArrayList<>();
+        String screenEnum = show.getFormats();
+        List<FormatEnum> enumList = new ArrayList<>();
         for (String screen:screenEnum.split(",")){
-            enumList.add(ScreenTypeEnum.valueOf(screen));
+            enumList.add(FormatEnum.valueOf(screen));
         }
 
     ShowResponseDTO showResponseDTO = ShowResponseDTO.builder()
             .showDate(show.getShowDate())
             .showTime(show.getShowTime())
             .screenTypeEnums(enumList)
-            .movieName(show.getMovie().getMovieName())
+            .movieName(show.getMovie().getTitle())
             .theatreName(show.getTheatre().getName())
             .build();
         return showResponseDTO;

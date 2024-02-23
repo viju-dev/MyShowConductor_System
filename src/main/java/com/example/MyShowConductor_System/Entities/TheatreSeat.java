@@ -20,8 +20,10 @@ public class TheatreSeat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
     private String seatNo;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private SeatTypeEnum type;
 

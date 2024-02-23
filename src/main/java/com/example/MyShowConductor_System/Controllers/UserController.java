@@ -6,17 +6,24 @@ import com.example.MyShowConductor_System.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
+@Validated
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
     UserService userService;
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/add")
     public ResponseEntity addUser(@RequestBody UserEntryDTO userEntryDTO){
         try {
@@ -29,19 +36,20 @@ public class UserController {
         }
     }
 
-    @PutMapping("/updateLocationByMob")
-    public ResponseEntity updateLocation(@RequestParam("mob") String mob,@RequestParam("location") String location){
+    @PutMapping("/location-by-mob")
+    public ResponseEntity updateLocation(@RequestParam("mob") @NotBlank String mob, @RequestParam("location") @NotBlank String location){
         String result = userService.updateLocation(mob,location);
         return new ResponseEntity<>(result,HttpStatus.ACCEPTED);
     }
-    @GetMapping("/getAll")
+    @GetMapping("/all")
     public ResponseEntity getAll(){
         List<User> userList = userService.getALl();
         return new ResponseEntity<>(userList,HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/deleteById")
-    public ResponseEntity deleteById(@RequestParam("id") int id){
+
+    @DeleteMapping("/by-id")
+    public ResponseEntity deleteById(@RequestParam("id") @NotNull @Positive int id){
         try {
             String result = userService.deleteById(id);
             return new ResponseEntity<>(result, HttpStatus.RESET_CONTENT);

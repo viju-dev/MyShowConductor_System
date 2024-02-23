@@ -1,6 +1,5 @@
 package com.example.MyShowConductor_System.Entities;
 
-import com.example.MyShowConductor_System.Enums.RatingEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,17 +22,24 @@ public class Movie {
     private int id;
 
     @Column(unique = true,nullable = false)
-    private String movieName;
+    private String title;
 
-    @Enumerated(EnumType.STRING)
-    private RatingEnum rating;
+//    @Enumerated(EnumType.STRING) // in double
+    private Double rating;
 
+//    private String image;
+    @Column(nullable = false)
+    private String formats;
+
+    @Column(nullable = false)
     private int duration;
 
-    private String genre;
+    @Column(nullable = false)
+    private String genres;
 
 //    @Enumerated(EnumType.STRING) // ued to get enum value as string another one to get index of that value in integer
     //private LanguagesEnum languages;
+    @Column(nullable = false)
     private String languages; // used languages coz we cant store enumarray or other array in database
 //    private LanguagesEnum[] languages  ={LanguagesEnum.HINDI,LanguagesEnum.ENGLISH};
 

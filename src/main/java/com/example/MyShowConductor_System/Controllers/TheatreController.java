@@ -7,11 +7,16 @@ import com.example.MyShowConductor_System.Services.TheatreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
+@Validated
 @RequestMapping("/theatres")
 public class TheatreController {
     @Autowired
@@ -30,32 +35,32 @@ public class TheatreController {
     }
 
     //getTheatres with shows by location and movie
-    @GetMapping("/GetAllByLocationAndMovie")
-    public ResponseEntity GetAllByLocationAndMovie(@RequestParam("location") String location,@RequestParam("movieName") String movieName){
-        List<TheatreShowsResponnseDTO> theatreList = theatreService.GetAllByLocationAndMovie(location,movieName);
-        return new ResponseEntity(theatreList,HttpStatus.FOUND);
+    @GetMapping("/by-location-and-movie")
+    public ResponseEntity getAllByLocationAndMovie(@RequestParam("location") @NotBlank String location, @RequestParam("movieName") @NotBlank String movieName){
+        List<TheatreShowsResponnseDTO> theatreList = theatreService.getAllByLocationAndMovie(location,movieName);
+        return new ResponseEntity(theatreList,HttpStatus.OK);
     }
 
     //getAll theatres by location
-    @GetMapping("/GetAllByLocation")
-    public ResponseEntity GetAllByLocation(@RequestParam("location") String location){
-        List<TheatreResponseDTO> theatreList = theatreService.GetAllByLocation(location);
-        return new ResponseEntity(theatreList,HttpStatus.FOUND);
+    @GetMapping("/by-location")
+    public ResponseEntity getAllByLocation(@RequestParam("location") @NotBlank String location){
+        List<TheatreResponseDTO> theatreList = theatreService.getAllByLocation(location);
+        return new ResponseEntity(theatreList,HttpStatus.OK);
     }
-    @GetMapping("/GetAll")
-    public ResponseEntity GetAll(){
-        List<TheatreResponseDTO> theatreList = theatreService.GetAll();
-        return new ResponseEntity<>(theatreList,HttpStatus.FOUND);
-    }
-
-    @GetMapping("/GetAllByMovie")
-    public ResponseEntity GetAllByMovie(@RequestParam("movieName") String movieName){
-        List<TheatreResponseDTO> theatreList = theatreService.GetAllByMovie(movieName);
-        return new ResponseEntity<>(theatreList,HttpStatus.FOUND);
+    @GetMapping("/all")
+    public ResponseEntity getAll(){
+        List<TheatreResponseDTO> theatreList = theatreService.getAll();
+        return new ResponseEntity<>(theatreList,HttpStatus.OK);
     }
 
-    @DeleteMapping("/deleteById")
-    public ResponseEntity deleteById(@RequestParam("theatreId") int theatreId){
+    @GetMapping("/by-movie")
+    public ResponseEntity getAllByMovie(@RequestParam("movieName") @NotBlank String movieName){
+        List<TheatreResponseDTO> theatreList = theatreService.getAllByMovie(movieName);
+        return new ResponseEntity<>(theatreList,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/by-id")
+    public ResponseEntity deleteById(@RequestParam("theatreId") @NotNull @Positive int theatreId){
         String result = theatreService.deleteById(theatreId);
         return new ResponseEntity<>(result,HttpStatus.GONE);
     }

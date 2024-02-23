@@ -19,12 +19,21 @@ public class ShowSeat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(nullable = false)
     private String seatNo;
+
+    @Column(nullable = false)
     private boolean isBooked;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private SeatTypeEnum seatType;
+
+    @Column(nullable = false)
     private int price; //price of CLASSIC Seat for that particular
     //book Date
+
     private Date bookedAt;
 
     //Mapping ShowSeat -> Show
