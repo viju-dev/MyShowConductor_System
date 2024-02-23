@@ -8,12 +8,18 @@ import com.example.MyShowConductor_System.Services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController //is used to create web services that return JSON or XML data
 //@Controller //is used to create web controllers that return views, which is further resolved by view resolver
+@Validated
 @RequestMapping("/movies")
 public class MovieController {
     @Autowired
@@ -31,77 +37,77 @@ public class MovieController {
         }
     }
 
-    @GetMapping("/GetById") // this mapping name should be different for every get mapping
-    public ResponseEntity GetById(@RequestParam("id") int id){
-//        Movie movie = movieService.GetById(id);  //try catch and through bad request if name or id is invalis / not exist
+    @GetMapping("/by-id") // this mapping name should be different for every get mapping
+    public ResponseEntity getById(@RequestParam("id") @NotNull @Positive int id){
+//        Movie movie = movieService.getById(id);  //try catch and through bad request if name or id is invalid / not exist
 
         //converted to movie to ResponseDto
-        MovieResponseDTO movieResponseDTO = movieService.GetById(id);
-        return new ResponseEntity<>(movieResponseDTO,HttpStatus.FOUND);
+        MovieResponseDTO movieResponseDTO = movieService.getById(id);
+        return new ResponseEntity<>(movieResponseDTO,HttpStatus.OK);
     }
-    @GetMapping("/GetByName")
-    public ResponseEntity GetByName(@RequestParam("name") String name){
-        MovieResponseDTO movieResponseDTO = movieService.GetByName(name);
-        return new ResponseEntity<>(movieResponseDTO,HttpStatus.FOUND);
+    @GetMapping("/by-name")
+    public ResponseEntity getByName(@RequestParam("name") @NotBlank String name){
+        MovieResponseDTO movieResponseDTO = movieService.getByName(name);
+        return new ResponseEntity<>(movieResponseDTO,HttpStatus.OK);
     }
-    @GetMapping("/GetByLanguages")
-    public ResponseEntity GetByLanguages(@RequestParam("languages") String languages){
-        List<MovieResponseDTO> dtoArrayList = movieService.GetByLanguages(languages);
+    @GetMapping("/by-languages")
+    public ResponseEntity getByLanguages(@RequestParam("languages") @NotBlank String languages){
+        List<MovieResponseDTO> dtoArrayList = movieService.getByLanguages(languages);
 
-        return new ResponseEntity<>(dtoArrayList,HttpStatus.FOUND);
+        return new ResponseEntity<>(dtoArrayList,HttpStatus.OK);
     }
-    @GetMapping("/GetByGenre")
-    public ResponseEntity GetByGenre(@RequestParam("genres") String genres){ //list of enums?
-        List<MovieResponseDTO> dtoArrayList = movieService.GetByGenre(genres);
-        return new ResponseEntity<>(dtoArrayList,HttpStatus.FOUND);
+    @GetMapping("/by-genre")
+    public ResponseEntity getByGenre(@RequestParam("genres") @NotBlank String genres){ //list of enums?
+        List<MovieResponseDTO> dtoArrayList = movieService.getByGenre(genres);
+        return new ResponseEntity<>(dtoArrayList,HttpStatus.OK);
     }
 
     //theatre or movie Function // ig movies are 2d ,3d coz depends on how it shooted
-    @GetMapping("/GetByFormat") //by screenType // movie can be 3d but depends on show whther they showing 3d or 2d so make that attribute in show as well
-    public ResponseEntity GetByFormat(@RequestParam("screenType") List<String> screenType){
+    @GetMapping("/by-format") //by screenType // movie can be 3d but depends on show whether they are showing 3d or 2d so make that attribute in show as well
+    public ResponseEntity getByFormat(@RequestParam("screenType") @NotNull List<String> screenType){
 
-        return new ResponseEntity<>(HttpStatus.FOUND);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-    @GetMapping("/GetAll")
+    @GetMapping("/getAll")
     public ResponseEntity GetAll(){
-        List<MovieResponseDTO> dtoArrayList = movieService.GetAll();
+        List<MovieResponseDTO> dtoArrayList = movieService.getAll();
 
-        return new ResponseEntity<>(dtoArrayList,HttpStatus.FOUND);
+        return new ResponseEntity<>(dtoArrayList,HttpStatus.OK);
     }
-    @GetMapping("/GetTopMovie")
-    public ResponseEntity GetTopMovie(){
-        Movie movie = movieService.GetTopMovie();
-        return new ResponseEntity<>(movie,HttpStatus.FOUND);
+    @GetMapping("/top-movies")
+    public ResponseEntity getTopMovie(){
+        Movie movie = movieService.getTopMovie();
+        return new ResponseEntity<>(movie,HttpStatus.OK);
     }
-    @GetMapping("/GetByMaxShows")
-    public ResponseEntity GetByMaxShows(){
-        String movieName = movieService.GetByMaxShows();
-        return new ResponseEntity<>(movieName,HttpStatus.FOUND);
+    @GetMapping("/max-shows")
+    public ResponseEntity getByMaxShows(){
+        String movieName = movieService.getByMaxShows();
+        return new ResponseEntity<>(movieName,HttpStatus.OK);
     }
-    @GetMapping("/GetCollectionByMovie")
-    public ResponseEntity GetCollectionByMovie(@RequestParam("movieName") String movieName){
-        long totalCollecection = movieService.GetCollectionByMovie(movieName);
-        return new ResponseEntity<>( totalCollecection,HttpStatus.FOUND);
+    @GetMapping("/collection")
+    public ResponseEntity getCollectionByMovie(@RequestParam("movieName") @NotBlank String movieName){
+        long totalCollecection = movieService.getCollectionByMovie(movieName);
+        return new ResponseEntity<>( totalCollecection,HttpStatus.OK);
     }
-    @PutMapping("/EditMovie")
-    public ResponseEntity EditMovie(@RequestBody MovieEntryDTO movieEntryDTO){
-        String result = movieService.EditMovie(movieEntryDTO);
-        return new ResponseEntity<>(HttpStatus.FOUND);
+    @PutMapping("/edit")
+    public ResponseEntity editMovie(@RequestBody MovieEntryDTO movieEntryDTO){
+        String result = movieService.editMovie(movieEntryDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-    @DeleteMapping("/DeleteById")
-    public ResponseEntity DeleteById(@RequestParam("id") int id){
-        String result = movieService.DeleteById(id);
-        return new ResponseEntity<>(result,HttpStatus.FOUND);
+    @DeleteMapping("/by-id")
+    public ResponseEntity deleteById(@RequestParam("id") @NotNull @Positive int id){
+        String result = movieService.deleteById(id);
+        return new ResponseEntity<>(result,HttpStatus.OK);
     }
-    @DeleteMapping("/DeleteByName")
-    public ResponseEntity DeleteByName(@RequestParam("name") String name){
-        String result = movieService.DeleteByName(name);
-        return new ResponseEntity<>(result,HttpStatus.FOUND);
+    @DeleteMapping("/by-name")
+    public ResponseEntity deleteByName(@RequestParam("name") @NotBlank String name){
+        String result = movieService.deleteByName(name);
+        return new ResponseEntity<>(result,HttpStatus.OK);
     }
-    @DeleteMapping("/DeleteAll")
-    public ResponseEntity DeleteAll(){
-        String result = movieService.DeleteAll();
-        return new ResponseEntity<>(result,HttpStatus.FOUND);
+    @DeleteMapping("/all")
+    public ResponseEntity deleteAll(){
+        String result = movieService.deleteAll();
+        return new ResponseEntity<>(result,HttpStatus.OK);
     }
 
     //format one and edit ones by name or something//

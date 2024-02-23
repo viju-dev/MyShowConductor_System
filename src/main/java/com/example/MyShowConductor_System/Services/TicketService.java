@@ -15,21 +15,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-import javax.mail.BodyPart;
 import javax.mail.MessagingException;
-import javax.mail.Transport;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.sql.DataSource;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -49,7 +37,7 @@ public class TicketService {
     MailService mailService;
 
 
-    public List<TicketResponseDTO> GetAllByUser(int userId) {
+    public List<TicketResponseDTO> getAllByUser(int userId) {
         List<TicketResponseDTO> ticketList = new ArrayList<>();
         for (Ticket ticket:ticketRepository.findByUserId(userId)){ //userId or user
             ticketList.add(TicketConvertors.EntityToResponse(ticket));
@@ -65,7 +53,7 @@ public class TicketService {
         Show show = showRepository.findById(ticketEntryDTO.getShowId()).get();
         ticket.setShow(show);
 
-        ticket.setMovieName(show.getMovie().getMovieName()); //set moviename
+        ticket.setMovieName(show.getMovie().getTitle()); //set moviename
         ticket.setTheaterName(show.getTheatre().getName());
 
         ticket.setShowDate(show.getShowDate());

@@ -19,13 +19,13 @@ public class MovieConvertors {
 
         //Genres Enum to String
         String genre = "";
-        for (MovieGenreEnum str:movieEntryDTO.getGenre()){ //converting MovieGenreEnum to genre string
+        for (MovieGenreEnum str:movieEntryDTO.getGenres()){ //converting MovieGenreEnum to genre string
             genre += str.name()+",";
         }
 
-        Movie movie = Movie.builder().movieName(movieEntryDTO.getMovieName())
+        Movie movie = Movie.builder().title(movieEntryDTO.getMovieName())
                 .duration(movieEntryDTO.getDuration())
-                .genre(genre)
+                .genres(genre)
                 .rating(movieEntryDTO.getRating())
                .languages(lang)
                 .build();
@@ -37,19 +37,23 @@ public class MovieConvertors {
         //Languages String to Enum
         String[] lang = movie.getLanguages().split(",");
         LanguagesEnum[] languages = new LanguagesEnum[lang.length];
+//        String langstr = "";
         for (int i=0;i< lang.length;i++){
             languages[i]= LanguagesEnum.valueOf(lang[i]);
+//            langstr += languages[i]+", ";
         }
 
         //Genres string to Enum
-        String[] genre = movie.getGenre().split(",");
+        String[] genre = movie.getGenres().split(",");
         MovieGenreEnum[] genres = new MovieGenreEnum[genre.length];
-        for (int i=0;i< lang.length;i++){
+//        String genrestr = "";
+        for (int i=0;i< genre.length;i++){
             genres[i]= MovieGenreEnum.valueOf(genre[i]);
+//            genrestr += genres[i]+", ";
         }
 
         MovieResponseDTO movieResponseDTO = MovieResponseDTO.builder()
-                .movieName(movie.getMovieName())
+                .movieName(movie.getTitle())
                 .duration(movie.getDuration())
                 .genre(genres)
                 .languages(languages)

@@ -1,6 +1,6 @@
 package com.example.MyShowConductor_System.ResponseDTOs;
 
-import com.example.MyShowConductor_System.Enums.ScreenTypeEnum;
+import com.example.MyShowConductor_System.Enums.FormatEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +19,7 @@ public class ShowResponseDTO {
     private LocalDate showDate;
     private LocalTime showTime;
 //    private ScreenTypeEnum screenType;
-     List<ScreenTypeEnum> screenTypeEnums = new ArrayList<>();
+     List<FormatEnum> screenTypeEnums = new ArrayList<>();
     private String movieName;
     private String theatreName;
     //showseatlist

@@ -21,14 +21,26 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
     private String movieName;
+
+    @Column(nullable = false)
     private LocalDate showDate;
+
+    @Column(nullable = false)
     private LocalTime showTime;
+
+    @Column(nullable = false)
     private int totalAmount;
 //    private String transactionId = UUID.randomUUID().toString();
 //    private boolean status;
-    private String ticketId = UUID.randomUUID().toString();
+    @Column(nullable = false)
+    private String ticketId = UUID.randomUUID().toString(); //ticketid or booking id that will be printed on ticket
+
+    @Column(nullable = false)
     private String theaterName;
+
+    @Column(nullable = false)
     private String bookedSeats;
 
     //Mapping Ticket -> User

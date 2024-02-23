@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TicketEntryDTO {
+    @NotNull
+    @Positive
     private int showId;
+    @NotNull
+    @Positive
     private List<String> requestedSeats = new ArrayList<>();
+    @NotNull
+    @Positive
     private int userId;
 }

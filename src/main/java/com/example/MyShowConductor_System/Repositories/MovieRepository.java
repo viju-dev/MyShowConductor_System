@@ -7,12 +7,12 @@ import java.util.List;
 
 public interface MovieRepository extends JpaRepository<Movie,Integer> {
 
-    Movie findByMovieName(String name);
+    Movie findByTitle(String name);
 
     List<Movie> findByLanguages(String languages);
 
 
-    void deleteByMovieName(String name);
+    void deleteByTitle(String name);
 
 //    Movie findByName(String name);
 }

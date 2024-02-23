@@ -32,19 +32,18 @@ public class MovieService {
         Movie movie = MovieConvertors.convertEntryDtoToEntity(movieEntryDTO);
         movieRepository.save(movie);
 
-
         return "Movie Added Successfully;";
     }
 
-    public MovieResponseDTO GetById(int id){
+    public MovieResponseDTO getById(int id){
         return MovieConvertors.convertDtoToResponse(movieRepository.findById(id).get());
     }
 
-    public MovieResponseDTO GetByName(String name){
-        return MovieConvertors.convertDtoToResponse(movieRepository.findByMovieName(name));
+    public MovieResponseDTO getByName(String name){
+        return MovieConvertors.convertDtoToResponse(movieRepository.findByTitle(name));
     }
 
-    public List<MovieResponseDTO> GetByLanguages(String languages){
+    public List<MovieResponseDTO> getByLanguages(String languages){
       //  return movieRepository.findByLanguages(languages); //Collections.singletonList(languages) //used to convert string to array
 
         String[] language = languages.split(",");
@@ -61,13 +60,13 @@ public class MovieService {
         return ans;
     }
 
-    public List<MovieResponseDTO> GetByGenre(String genres){ //list of enums?
+    public List<MovieResponseDTO> getByGenre(String genres){ //list of enums?
         String[] genre = genres.split(",");
         List<Movie> movieList = movieRepository.findAll();
         List<MovieResponseDTO> ans = new ArrayList<>();
         for (Movie movie:movieList){
             for (String genr:genre){
-                String movieGenre = movie.getGenre();
+                String movieGenre = movie.getGenres();
                 if (movieGenre.contains(genr)){
                     ans.add(MovieConvertors.convertDtoToResponse(movie));
                 }
@@ -76,46 +75,46 @@ public class MovieService {
         return ans;
     }
 
-//    public ResponseEntity GetByFormat( String screenType){
+//    public ResponseEntity getByFormat( String screenType){
 //        return new ResponseEntity<>(HttpStatus.FOUND);
 //    }
 
-    public List<MovieResponseDTO> GetAll(){
+    public List<MovieResponseDTO> getAll(){
         List<MovieResponseDTO> movieResponseDTOList = new ArrayList<>();
         for (Movie movie: movieRepository.findAll()){
             movieResponseDTOList.add( MovieConvertors.convertDtoToResponse(movie));
         }
         return movieResponseDTOList;
     }
-    public Movie GetTopMovie() {
+    public Movie getTopMovie() {
         Movie movie = new Movie();
         return movie;
     }
-    public String GetByMaxShows() {
+    public String getByMaxShows() {
         int movieId = showRepository.getMovieByMax();
-        String movieName=movieRepository.findById(movieId).get().getMovieName();
+        String movieName=movieRepository.findById(movieId).get().getTitle();
         return movieName;
     }
-    public String EditMovie(@RequestBody MovieEntryDTO movieEntryDTO){
+    public String editMovie(@RequestBody MovieEntryDTO movieEntryDTO){
         movieRepository.save(MovieConvertors.convertEntryDtoToEntity(movieEntryDTO));
         return "Movie Updated Successfully";
     }
-    public String DeleteById(int id){
+    public String deleteById(int id){
         movieRepository.deleteById(id);
         return "Movie Deleted SuccessFully";
     }
-    public String DeleteByName(String name){
-        movieRepository.deleteByMovieName(name);
+    public String deleteByName(String name){
+        movieRepository.deleteByTitle(name);
         return "Movie Deleted SuccessFully";
     }
-    public String DeleteAll(){
+    public String deleteAll(){
         movieRepository.deleteAll();
         return "All Movies Are Deleted successFully";
     }
 
 
-    public long GetCollectionByMovie(String movieName) {
-        int movieId = movieRepository.findByMovieName(movieName).getId();
+    public long getCollectionByMovie(String movieName) {
+        int movieId = movieRepository.findByTitle(movieName).getId();
         long total = 0;
         for (Show show:showRepository.findAllByMovieId(movieId)){//iterate on show
             for (ShowSeat showSeat:show.getShowSeatList()){//showSeatList by show
@@ -141,4 +140,6 @@ public class MovieService {
 
         javaMailSender.send(mimeMessage);
     }
+
+
 }

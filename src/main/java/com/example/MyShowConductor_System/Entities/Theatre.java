@@ -20,10 +20,20 @@ public class Theatre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false, unique = true)//unique while creating theratre name + city
     private String name;
 
+    @Column(nullable = false)
     private String address; //can set diffrent attr for location so that they can get filter using location
+
+    @Column(nullable = false)
     private String location;
+
+    @Column(nullable = false)
+    private String formats;
+
+//    private String Facility;
+
     //Mapping Theatre -> Show
     @OneToMany(mappedBy = "theatre",cascade = CascadeType.ALL)
     private List<Show> showList = new ArrayList<>();

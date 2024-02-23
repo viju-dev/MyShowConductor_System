@@ -14,8 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MovieResponseDTO {
     private String movieName;
-    private RatingEnum rating;
+    private Double rating;
     private MovieGenreEnum[] genre; // can be changed to string as we are just showing it to user
+//private String genre;
     private int duration;
     private LanguagesEnum[] languages;
+//private String languages;
 }

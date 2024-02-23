@@ -61,9 +61,9 @@ public class ShowService {
         return "Show added Successfully";
     }
 
-    public List<ShowResponseDTO> GetShowTime(String movieName, int theatreId) {
+    public List<ShowResponseDTO> getShowTime(String movieName, int theatreId) {
         List<ShowResponseDTO> showList = new ArrayList<>();
-        int movieId = movieRepository.findByMovieName(movieName).getId();
+        int movieId = movieRepository.findByTitle(movieName).getId();
         for (Show show:showRepository.findAllByMovieIdAndTheatreId(movieId,theatreId)){
             showList.add(ShowConvertors.convertEntityToResponse(show));
         }
@@ -105,7 +105,7 @@ public class ShowService {
 
     }
 
-    public List<ShowResponseDTO> GetShowTimes(String location, String movieName, String theatreName) {
+    public List<ShowResponseDTO> getShowTimes(String location, String movieName, String theatreName) {
         List<ShowResponseDTO> showList = new ArrayList<>();
         //check whether theatre with given name exist in given location or not
         Theatre theatre;
@@ -116,36 +116,36 @@ public class ShowService {
             theatre = theatreRepository.findByNameAndLocation(theatreName,location);
         }
         int theatreId = theatre.getId();
-        int movieId = movieRepository.findByMovieName(movieName).getId();
+        int movieId = movieRepository.findByTitle(movieName).getId();
         for (Show show:showRepository.findAllByMovieIdAndTheatreId(movieId,theatreId)){
             showList.add(ShowConvertors.convertEntityToResponse(show));
         }
         return showList;
     }
 
-    public List<ShowResponseDTO> GetShowsByMovie(String movieName) {
-        int movieId = movieRepository.findByMovieName(movieName).getId();
+    public List<ShowResponseDTO> getShowsByMovie(String movieName) {
+        int movieId = movieRepository.findByTitle(movieName).getId();
         List<ShowResponseDTO> showList = new ArrayList<>();
         for (Show show:showRepository.findAllByMovieId(movieId)){
             showList.add(ShowConvertors.convertEntityToResponse(show));
         }
         return showList;
     }
-    public List<ShowResponseDTO> GetShowsByDate(String showDate) {
+    public List<ShowResponseDTO> getShowsByDate(String showDate) {
         LocalDate localDate = LocalDate.parse(showDate);
 
         List<ShowResponseDTO> showList = new ArrayList<>();
         for (Show show:showRepository.findAllByShowDate(localDate)){//findByAlMovieIdAndShowDate
             ShowResponseDTO showResponseDTO = ShowConvertors.convertEntityToResponse(show);
-            showResponseDTO.setMovieName(show.getMovie().getMovieName()); //set moviename
+            showResponseDTO.setMovieName(show.getMovie().getTitle()); //set moviename
             showResponseDTO.setTheatreName(show.getTheatre().getName());//set theatre name
             showList.add(showResponseDTO);
         }
         return showList;
     }
-    public List<ShowResponseDTO> GetShowsByMovieAndDate(String movieName, String showDate) {
+    public List<ShowResponseDTO> getShowsByMovieAndDate(String movieName, String showDate) {
         LocalDate localDate = LocalDate.parse(showDate);
-        int movieId = movieRepository.findByMovieName(movieName).getId();
+        int movieId = movieRepository.findByTitle(movieName).getId();
 
         List<ShowResponseDTO> showList = new ArrayList<>();
         for (Show show:showRepository.findAllByMovieIdAndShowDate(movieId,localDate)){//findByAlMovieIdAndShowDate
@@ -158,8 +158,8 @@ public class ShowService {
     }
 
 
-    public List<ShowResponseDTO> GetShowsByTheatreAndMovie(int theatreId, String movieName) {
-        int movieId = movieRepository.findByMovieName(movieName).getId();
+    public List<ShowResponseDTO> getShowsByTheatreAndMovie(int theatreId, String movieName) {
+        int movieId = movieRepository.findByTitle(movieName).getId();
 
         List<ShowResponseDTO> showList = new ArrayList<>();
         for (Show show:showRepository.findAllByMovieIdAndTheatreId(movieId,theatreId)){//findByAlMovieIdAndShowDate
@@ -171,12 +171,12 @@ public class ShowService {
         return showList;
     }
 
-    public List<ShowResponseDTO> GetShowsByTheatre(int theatreId) {
+    public List<ShowResponseDTO> getShowsByTheatre(int theatreId) {
 
         List<ShowResponseDTO> showList = new ArrayList<>();
         for (Show show:showRepository.findAllByTheatreId(theatreId)){//findByAlMovieIdAndShowDate
             ShowResponseDTO showResponseDTO = ShowConvertors.convertEntityToResponse(show);
-            showResponseDTO.setMovieName(show.getMovie().getMovieName()); //set moviename
+            showResponseDTO.setMovieName(show.getMovie().getTitle()); //set moviename
             showResponseDTO.setTheatreName(show.getTheatre().getName());//set theatre name
             showList.add(showResponseDTO);
         }

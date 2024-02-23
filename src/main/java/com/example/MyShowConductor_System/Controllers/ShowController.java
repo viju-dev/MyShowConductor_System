@@ -6,16 +6,22 @@ import com.example.MyShowConductor_System.Services.ShowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
+@Validated
 @RequestMapping("/shows")
 public class ShowController {
     @Autowired
     ShowService showService;
-    @PostMapping("/addShow")
+    @PostMapping("/add")
     public ResponseEntity addShow(@RequestBody ShowEntryDTO showEntryDTO){
         try {
             String result = showService.addShow(showEntryDTO);
@@ -28,44 +34,44 @@ public class ShowController {
 
     }
     //get SHOWtimes by moviename,thetarename
-    @GetMapping("/GetShowTime")
-    public ResponseEntity GetShowTime(@RequestParam("movieName") String movieName,@RequestParam("theatreId") int theatreId){
-        List<ShowResponseDTO> showList = showService.GetShowTime(movieName,theatreId);
-        return new ResponseEntity<>(showList,HttpStatus.FOUND);
+    @GetMapping("/showtime-by-movie-and-theatre")
+    public ResponseEntity getShowTime(@RequestParam("movieName") @NotBlank String movieName, @RequestParam("theatreId") @NotNull @Positive int theatreId){
+        List<ShowResponseDTO> showList = showService.getShowTime(movieName,theatreId);
+        return new ResponseEntity<>(showList,HttpStatus.OK);
     }
-    @GetMapping("/GetShowTimes")
-    public ResponseEntity GetShowTimes(@RequestParam("location") String location,@RequestParam("movieName") String movieName,@RequestParam("theatreName") String theatreName){
-        List<ShowResponseDTO> showList = showService.GetShowTimes(location,movieName,theatreName);
+    @GetMapping("/showtime-by-location-movie-theatre")
+    public ResponseEntity getShowTimes(@RequestParam("location") @NotBlank String location,@RequestParam("movieName") @NotBlank String movieName,@RequestParam("theatreName") @NotBlank String theatreName){
+        List<ShowResponseDTO> showList = showService.getShowTimes(location,movieName,theatreName);
 
-        return new ResponseEntity(showList,HttpStatus.FOUND);
+        return new ResponseEntity(showList,HttpStatus.OK);
     }
 
-    @GetMapping("/GetShowsByMovie")
-    public ResponseEntity GetShowsByMovie(@RequestParam("movieName") String movieName){
-        List<ShowResponseDTO> showList = showService.GetShowsByMovie(movieName);
-        return new ResponseEntity<>(showList,HttpStatus.FOUND);
+    @GetMapping("/by-movie")
+    public ResponseEntity getShowsByMovie(@RequestParam("movieName") @NotBlank String movieName){
+        List<ShowResponseDTO> showList = showService.getShowsByMovie(movieName);
+        return new ResponseEntity<>(showList,HttpStatus.OK);
     }
     //getshows bydate
-    @GetMapping("/GetShowsByDate")
-    public ResponseEntity GetShowsByDate(@RequestParam("date") String date){
-        List<ShowResponseDTO> showList = showService.GetShowsByDate(date);
-        return new ResponseEntity<>(showList,HttpStatus.FOUND);
+    @GetMapping("/by-date")
+    public ResponseEntity getShowsByDate(@RequestParam("date") @NotBlank String date){
+        List<ShowResponseDTO> showList = showService.getShowsByDate(date);
+        return new ResponseEntity<>(showList,HttpStatus.OK);
     }
     //getshows by date and movie
-    @GetMapping("/GetShowsByMovieAndDate")
-    public ResponseEntity GetShowsByMovieAndDate(@RequestParam("movieName") String movieName, @RequestParam("date") String date ){
-        List<ShowResponseDTO> showList = showService.GetShowsByMovieAndDate(movieName,date);
-        return new ResponseEntity<>(showList,HttpStatus.FOUND);
+    @GetMapping("/by-movie-and-date")
+    public ResponseEntity getShowsByMovieAndDate(@RequestParam("movieName") @NotBlank String movieName, @RequestParam("date") @NotBlank String date ){
+        List<ShowResponseDTO> showList = showService.getShowsByMovieAndDate(movieName,date);
+        return new ResponseEntity<>(showList,HttpStatus.OK);
     }
-    @GetMapping("/GetShowsByTheatreAndMovie")
-    public ResponseEntity GetShowsByTheatreAndMovie(@RequestParam("theatreId") int theatreId, @RequestParam("movieName") String movieName ){
-        List<ShowResponseDTO> showList = showService.GetShowsByTheatreAndMovie(theatreId,movieName);
-        return new ResponseEntity<>(showList,HttpStatus.FOUND);
+    @GetMapping("/by-theatre-and-movie")
+    public ResponseEntity getShowsByTheatreAndMovie(@RequestParam("theatreId") @NotNull @Positive int theatreId, @RequestParam("movieName") @NotBlank String movieName ){
+        List<ShowResponseDTO> showList = showService.getShowsByTheatreAndMovie(theatreId,movieName);
+        return new ResponseEntity<>(showList,HttpStatus.OK);
     }
-    @GetMapping("/GetShowsByTheatre")
-    public ResponseEntity GetShowsByTheatre(@RequestParam("theatreId") int theatreId ){
-        List<ShowResponseDTO> showList = showService.GetShowsByTheatre(theatreId);
-        return new ResponseEntity<>(showList,HttpStatus.FOUND);
+    @GetMapping("/by-theatre")
+    public ResponseEntity getShowsByTheatre(@RequestParam("theatreId") @NotNull @Positive int theatreId ){
+        List<ShowResponseDTO> showList = showService.getShowsByTheatre(theatreId);
+        return new ResponseEntity<>(showList,HttpStatus.OK);
     }
 
 //    @GetMapping("/GetAvailableSeatsByShowAnd")

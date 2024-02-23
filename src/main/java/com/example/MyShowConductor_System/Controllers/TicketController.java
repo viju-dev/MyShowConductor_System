@@ -6,17 +6,22 @@ import com.example.MyShowConductor_System.Services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
+@Validated
 @RequestMapping("/tickets")
 public class TicketController {
     @Autowired
     TicketService ticketService;
-    @PostMapping("/addTicket")
+    @PostMapping("/create")//name as createTicket
     public ResponseEntity addTicket(@RequestBody TicketEntryDTO ticketEntryDTO){
 
         try {
@@ -30,13 +35,13 @@ public class TicketController {
 
     }
 
-    @GetMapping("/GetAllByUser")
-    public ResponseEntity GetAllByUser(@RequestParam("userId") int userId){
-        List<TicketResponseDTO> ticketList = ticketService.GetAllByUser(userId);
-        return new ResponseEntity<>(ticketList, HttpStatus.FOUND);
+    @GetMapping("/by-user")
+    public ResponseEntity getAllByUser(@RequestParam("userId") @NotNull @Positive int userId){
+        List<TicketResponseDTO> ticketList = ticketService.getAllByUser(userId);
+        return new ResponseEntity<>(ticketList, HttpStatus.OK);
     }
-    @DeleteMapping("/deleteById")
-    public ResponseEntity deleteById(@RequestParam("ticketId") String ticketId){
+    @DeleteMapping("/by-id")
+    public ResponseEntity deleteById(@RequestParam("ticketId") @NotBlank String ticketId){
         String result = null;
         try {
             result = ticketService.deleteById(ticketId);

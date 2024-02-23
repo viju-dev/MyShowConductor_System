@@ -80,7 +80,7 @@ public class TheatreService {
 
 
 
-    public List<TheatreShowsResponnseDTO> GetAllByLocationAndMovie(String location, String movieName) {
+    public List<TheatreShowsResponnseDTO> getAllByLocationAndMovie(String location, String movieName) {
         List<TheatreShowsResponnseDTO> theatreList = new ArrayList<>();
 //        for (Theatre theatre:theatreRepository.findByLocationAndMovieName(location,movieName)){
 //
@@ -88,7 +88,7 @@ public class TheatreService {
         return theatreList;
     }
 
-    public List<TheatreResponseDTO> GetAllByLocation(String location) {
+    public List<TheatreResponseDTO> getAllByLocation(String location) {
         List<TheatreResponseDTO> theatreList  = new ArrayList<>();
         for (Theatre theatre:theatreRepository.findByLocation(location)){
             theatreList.add(TheatreConvertors.EntityToResponse(theatre));
@@ -96,7 +96,7 @@ public class TheatreService {
         return theatreList;
     }
 
-    public List<TheatreResponseDTO> GetAll() {
+    public List<TheatreResponseDTO> getAll() {
         List<TheatreResponseDTO> theatreList = new ArrayList<>();
         for (Theatre theatre:theatreRepository.findAll()){
             theatreList.add(TheatreConvertors.EntityToResponse(theatre));
@@ -106,10 +106,10 @@ public class TheatreService {
 
 
 
-    public List<TheatreResponseDTO> GetAllByMovie(String movieName) {
+    public List<TheatreResponseDTO> getAllByMovie(String movieName) {
         List<TheatreResponseDTO> theatreList = new ArrayList<>();
         List<Integer> theatreIds = new ArrayList<>();
-        int movieId = movieRepository.findByMovieName(movieName).getId();
+        int movieId = movieRepository.findByTitle(movieName).getId();
         for (Show show:showRepository.findAllByMovieId(movieId)){
             if (!theatreIds.contains(show.getTheatre().getId())){
                 theatreList.add(TheatreConvertors.EntityToResponse(show.getTheatre()));
