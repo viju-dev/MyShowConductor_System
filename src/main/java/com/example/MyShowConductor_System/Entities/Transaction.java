@@ -1,6 +1,5 @@
 package com.example.MyShowConductor_System.Entities;
 
-import com.example.MyShowConductor_System.Enums.TransactionStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,22 +26,29 @@ public class Transaction {
 
     @Column(nullable = false)
     private LocalDate transactionDate;
-
+//can add localtime as well
     @Column(nullable = false)
     private int amount;
+
+//    private String message; //regarding transaction or anything liekw hich refund or something
 
     @Column(nullable = false)
     private String type;  // 'PAYMENT' or 'REFUND'
 
-    @Column(nullable = false)
-    private TransactionStatusEnum status;
+//    @Column(nullable = false)
+//    private TransactionStatusEnum status;
     // Mapping Transaction -> User
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn
+    private TransactionStatus transactionStatus;
+
     @ManyToOne
     @JoinColumn
     private User user;
 
     // Mapping Transaction -> Ticket
-    @OneToOne
+    @ManyToOne
     @JoinColumn
     private Ticket ticket;
 }

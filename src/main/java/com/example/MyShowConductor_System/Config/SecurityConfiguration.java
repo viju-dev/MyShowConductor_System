@@ -6,6 +6,7 @@ import com.example.MyShowConductor_System.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -22,7 +23,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 
 @Configuration
-//@EnableGlobalMethodSecurity(prePostEnabled = true)//for speciific request based authentication
+@EnableGlobalMethodSecurity(prePostEnabled = true)//for speciific request based authentication
 public class SecurityConfiguration {
 //    @Bean
 //    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
@@ -54,13 +55,25 @@ public class SecurityConfiguration {
     // Configure security filter chain
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        String URLS = "/swagger-ui/**, /api-docs";
 
         http.csrf(csrf -> csrf.disable())
 //                .cors(cors -> cors.disable())
 //                .cors().and()
                 .authorizeHttpRequests(auth -> auth.antMatchers("/home/**").authenticated()
-                        .antMatchers("/auth/login").permitAll()
-                        .antMatchers("/auth/SignUp").permitAll().anyRequest().authenticated())
+                        .antMatchers("/").permitAll()
+                        .antMatchers(HttpMethod.GET).permitAll()
+                        .antMatchers(HttpMethod.PUT).permitAll()
+                        .antMatchers(HttpMethod.DELETE).permitAll()
+//                        .antMatchers("/auth/login").permitAll()
+//                        .antMatchers("/auth/SignUp").permitAll()
+//                        .antMatchers("/movies/**").permitAll()
+                        .antMatchers(HttpMethod.POST).permitAll()
+//                        .antMatchers("/theatres/**").permitAll()
+//                        .antMatchers("/shows/**").permitAll()
+//                        .antMatchers("/feedbacks/**").permitAll()
+//                        .antMatchers("/users/**").permitAll()
+                        .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

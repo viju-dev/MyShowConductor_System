@@ -11,10 +11,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponseDTO {
+//    private String name;
+//    private String mobNo;
+//    private String email;
+//    private String address;
+//    private GenderEnum gender;
+//    private String password;
+//    private int age;
+
+
     private String name;
-    private int age;
-    private GenderEnum gender;
     private String mobNo;
     private String email;
     private String address;
+    private GenderEnum gender;
+    private boolean isEmailVerified;
+//    private String password;
 }

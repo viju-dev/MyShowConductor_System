@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TheatreShowsResponnseDTO {
+public class TheatreShowsResponseDTO {
     private String name;
     private String address;
     private String location;

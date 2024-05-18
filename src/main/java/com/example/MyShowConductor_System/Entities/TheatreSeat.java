@@ -21,11 +21,11 @@ public class TheatreSeat {
     private int id;
 
     @Column(nullable = false)
-    private String seatNo;
+    private String seatNo;//a12 b1 c23 maybe thats why seatNo is in string
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private SeatTypeEnum type;
+    private SeatTypeEnum type;//Classic , Premium, etc
 
     //Mapping TheatreSeat -> Theatre
     @ManyToOne

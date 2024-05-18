@@ -29,10 +29,19 @@ public class Theatre {
     @Column(nullable = false)
     private String location;
 
-    @Column(nullable = false)
-    private String formats;
+//    @Column(nullable = false)
+//    private String formats;
 
 //    private String Facility;
+
+//    Mapping enum entities
+    @ManyToMany
+    @JoinTable(
+        name = "theatre_format",
+        joinColumns = @JoinColumn(name = "theatre_id"),
+        inverseJoinColumns = @JoinColumn(name = "format_id"))
+    private List<Format> formats = new ArrayList<>();//actually screen should have specific one format so we should make screenn i guess
+    //or adding screen no in show might sort it// but theatre do supoort multiple formats i guess
 
     //Mapping Theatre -> Show
     @OneToMany(mappedBy = "theatre",cascade = CascadeType.ALL)

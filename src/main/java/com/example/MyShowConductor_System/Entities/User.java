@@ -1,7 +1,6 @@
 package com.example.MyShowConductor_System.Entities;
 
 import com.example.MyShowConductor_System.Enums.GenderEnum;
-import com.example.MyShowConductor_System.Enums.UserRoleEnum;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,19 +40,30 @@ public class User implements UserDetails {
     private String password;
 
     private String address;
-//    private LocationEnum location;
+//    private LocationEnum location; // idont think so its needed as its just temporary and can be changes everytime according to user so we'll store it in constant ok
 
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;  // optional attribute
 
-    @Enumerated(EnumType.STRING)
-    private UserRoleEnum userRole;
-
 //    @JsonFormat(pattern = "dd-MM-yyyy")
 //    private Date birthDate;
-    private int age;
 
-    private String location;
+//    private int age;
+
+//    private String location;
+
+    //    @Enumerated(EnumType.STRING)
+//    private UserRoleEnum userRole;
+
+
+//    maping for enum entities
+    @ManyToMany
+    @JoinTable(
+        name = "user_role",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+        )
+    private List<Role> roles = new ArrayList<Role>();
 
 
     //Mapping User -> Tickets

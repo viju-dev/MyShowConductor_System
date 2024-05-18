@@ -1,125 +1,50 @@
 package com.example.MyShowConductor_System.Services;
 
-import com.example.MyShowConductor_System.Converters.TheatreConvertors;
-import com.example.MyShowConductor_System.EntryDTOs.TheatreEntryDTO;
-import com.example.MyShowConductor_System.Enums.SeatTypeEnum;
 import com.example.MyShowConductor_System.Entities.Show;
 import com.example.MyShowConductor_System.Entities.Theatre;
 import com.example.MyShowConductor_System.Entities.TheatreSeat;
-import com.example.MyShowConductor_System.Repositories.MovieRepository;
-import com.example.MyShowConductor_System.Repositories.ShowRepository;
-import com.example.MyShowConductor_System.Repositories.TheatreRepository;
-import com.example.MyShowConductor_System.Repositories.TheatreSeatRepository;
+import com.example.MyShowConductor_System.EntryDTOs.TheatreEntryDTO;
+import com.example.MyShowConductor_System.ResponseDTOs.ShowResponseDTO;
 import com.example.MyShowConductor_System.ResponseDTOs.TheatreResponseDTO;
-import com.example.MyShowConductor_System.ResponseDTOs.TheatreShowsResponnseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
+import com.example.MyShowConductor_System.ResponseDTOs.TheatreSeatResponseDto;
+import com.example.MyShowConductor_System.ResponseDTOs.TheatreShowsResponseDTO;
 import java.util.List;
 
-@Service
-public class TheatreService {
-    @Autowired
-    TheatreRepository theatreRepository;
+public interface TheatreService {
+//    basic methods
 
-    @Autowired
-    TheatreSeatRepository theatreSeatRepository;
-    @Autowired
-    ShowRepository showRepository;
-    @Autowired
-    MovieRepository movieRepository;
+    public TheatreResponseDTO createTheatre(TheatreEntryDTO theatreEntryDTO,int classicSeats,int premiumSeats);
+    public TheatreResponseDTO getTheatreById(int theatreId);
 
-    public String addTheatre(TheatreEntryDTO theatreEntryDTO) throws RuntimeException{
-        Theatre theatre = TheatreConvertors.EntryToEntity(theatreEntryDTO);
-        //if theatre with same name and location already exist though an exception
-        if (theatreRepository.existsByNameAndLocation(theatre.getName(),theatre.getLocation())){//findByLastnameAndFirstname
-            throw new RuntimeException("Theatre with same name and location already exists");
-        }
-        //get seatslist and set seatlist of theatre
-        List<TheatreSeat> seatList = addSeats(theatre,theatreEntryDTO);
-        theatre.setTheatreSeatList(seatList);
-        //saving theatre
-        theatreRepository.save(theatre);
-        return "Theatre Successfully added";
-    }
-    public List<TheatreSeat> addSeats(Theatre theatre,TheatreEntryDTO theatreEntryDTO){
-        //taking this two extra attr from theatre Entry Dto
-        int classicSeats = theatreEntryDTO.getClassicSeatCount();
-        int premiumSeats = theatreEntryDTO.getPremiumSeatCount();
+    public TheatreResponseDTO updateTheatre(TheatreEntryDTO theatreEntryDTO, int theatreId);
 
-        //get seatslist and set seatlist of theatre
-        List<TheatreSeat> seatList = new ArrayList<>();//theatre.getTheatreSeatList(); //was giving error of null arraylist
+    public List<TheatreResponseDTO> getAll();
 
-        //for classic seats
-        for (int i=1;i<=classicSeats;i++){
-            TheatreSeat theatreSeat = new TheatreSeat();
-            theatreSeat.setSeatNo(i+"C");
-            theatreSeat.setType(SeatTypeEnum.C);
-            theatreSeat.setTheatre(theatre); //optional ig
-//            theatreSeatRepository.save(theatreSeat);
-            seatList.add(theatreSeat);
-            System.out.println(seatList.size());
-        }
+    public String delete(int theatreId);
 
-        //for premium seats
-        for (int i=1;i<=premiumSeats;i++){
-            TheatreSeat theatreSeat = new TheatreSeat();
-            theatreSeat.setSeatNo(i+"P");
-            theatreSeat.setType(SeatTypeEnum.P);
-            theatreSeat.setTheatre(theatre);
-//            theatreSeatRepository.save(theatreSeat);
-            seatList.add(theatreSeat);
-            System.out.println(seatList.size());
-        }
-        theatreRepository.save(theatre);
-        //not saving child here
-        return seatList;
-    }
+
+//    additional methods
+
+    public List<TheatreResponseDTO> getTheatresByLocation(String location);
+
+
+    public List<TheatreResponseDTO> getTheatresByMovie(int movieId);
 
 
 
+    public TheatreResponseDTO addSeats(int theatreId,int classicSeats,int premiumSeats);
 
-    public List<TheatreShowsResponnseDTO> getAllByLocationAndMovie(String location, String movieName) {
-        List<TheatreShowsResponnseDTO> theatreList = new ArrayList<>();
-//        for (Theatre theatre:theatreRepository.findByLocationAndMovieName(location,movieName)){
-//
-//        }
-        return theatreList;
-    }
-
-    public List<TheatreResponseDTO> getAllByLocation(String location) {
-        List<TheatreResponseDTO> theatreList  = new ArrayList<>();
-        for (Theatre theatre:theatreRepository.findByLocation(location)){
-            theatreList.add(TheatreConvertors.EntityToResponse(theatre));
-        }
-        return theatreList;
-    }
-
-    public List<TheatreResponseDTO> getAll() {
-        List<TheatreResponseDTO> theatreList = new ArrayList<>();
-        for (Theatre theatre:theatreRepository.findAll()){
-            theatreList.add(TheatreConvertors.EntityToResponse(theatre));
-        }
-        return theatreList;
-    }
+    public List<TheatreShowsResponseDTO> getTheatresByLocationAndMovie(String location, int movieId);
+    List<TheatreResponseDTO> getTheatresByFormat(String formatName);
 
 
+//        different methods
+//    additional method for absence of attribute
 
-    public List<TheatreResponseDTO> getAllByMovie(String movieName) {
-        List<TheatreResponseDTO> theatreList = new ArrayList<>();
-        List<Integer> theatreIds = new ArrayList<>();
-        int movieId = movieRepository.findByTitle(movieName).getId();
-        for (Show show:showRepository.findAllByMovieId(movieId)){
-            if (!theatreIds.contains(show.getTheatre().getId())){
-                theatreList.add(TheatreConvertors.EntityToResponse(show.getTheatre()));
-            }
-        }
-        return theatreList;
-    }
+    public List<ShowResponseDTO> getShowsByTheatre(int theatreId); // for all shows
+//    acn also create ongoing shows/ movies
+//    additional methods for absence of attribute
+    List<TheatreSeatResponseDto> getSeatsByTheatre(int theatreId);
 
-    public String deleteById(int theatreId) {
-        theatreRepository.deleteById(theatreId);
-        return "Theatre deleted SuccessFully";
-    }
+
 }

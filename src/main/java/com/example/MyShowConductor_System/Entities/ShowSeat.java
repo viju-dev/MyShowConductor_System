@@ -36,7 +36,14 @@ public class ShowSeat {
 
     private Date bookedAt;
 
+
+//    Mapping ShowSeat -> Ticket
+    @ManyToOne
+    @JoinColumn
+    private Ticket ticket;
+
     //Mapping ShowSeat -> Show
+    //here we can set column unique i guess so that show will not have multiple seats with same name
     @ManyToOne
     @JoinColumn
     private Show show;

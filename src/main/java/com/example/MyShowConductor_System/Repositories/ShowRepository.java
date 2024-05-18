@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface ShowRepository extends JpaRepository<Show,Integer> {
-    ArrayList<Show> findAllByMovieIdAndTheatreId(int movieId, int theatreId);
+    List<Show> findAllByMovieAndTheatre(int movieId, int theatreId);
 
     ArrayList<Show> findAllByMovieId(int movieId);
 
@@ -24,4 +24,6 @@ public interface ShowRepository extends JpaRepository<Show,Integer> {
     List<Integer> findByShowDate(LocalDate localDate);
 
     ArrayList<Show> findAllByTheatreId(int theatreId);
+
+    List<Show> findAllByMovieIdAndTheatreId(int movieId, int theatreId);
 }

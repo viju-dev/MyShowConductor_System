@@ -1,11 +1,14 @@
 package com.example.MyShowConductor_System.Controllers;
 
 import com.example.MyShowConductor_System.EntryDTOs.TicketEntryDTO;
+import com.example.MyShowConductor_System.Payloads.ApiResponse;
+import com.example.MyShowConductor_System.Payloads.ResponseData;
 import com.example.MyShowConductor_System.ResponseDTOs.TicketResponseDTO;
-import com.example.MyShowConductor_System.Services.TicketService;
+import com.example.MyShowConductor_System.Services.Impl.TicketServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,47 +20,37 @@ import java.util.List;
 
 @RestController
 @Validated
-@RequestMapping("/tickets")
+@RequestMapping("/api/tickets")
 public class TicketController {
     @Autowired
-    TicketService ticketService;
+    TicketServiceImpl ticketServiceImpl;
+
+//    @PreAuthorize("hasRole('USER')") both  can create
     @PostMapping("/create")//name as createTicket
-    public ResponseEntity addTicket(@RequestBody TicketEntryDTO ticketEntryDTO){
-
-        try {
-            String result = ticketService.addTicket(ticketEntryDTO);
-            return new ResponseEntity<>(result,HttpStatus.CREATED);
-        } catch (MessagingException e) {
-//            throw new RuntimeException(e);
-            String response = e.getMessage();
-            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity addTicket(@RequestBody TicketEntryDTO ticketEntryDTO) throws MessagingException {
+        TicketResponseDTO ticket = ticketServiceImpl.createTicket(ticketEntryDTO);
+        return new ResponseEntity<>(new ApiResponse<>("Ticket created successfully",true,new ResponseData<>(ticket)),HttpStatus.CREATED);
     }
 
-    @GetMapping("/by-user")
-    public ResponseEntity getAllByUser(@RequestParam("userId") @NotNull @Positive int userId){
-        List<TicketResponseDTO> ticketList = ticketService.getAllByUser(userId);
-        return new ResponseEntity<>(ticketList, HttpStatus.OK);
-    }
-    @DeleteMapping("/by-id")
-    public ResponseEntity deleteById(@RequestParam("ticketId") @NotBlank String ticketId){
-        String result = null;
-        try {
-            result = ticketService.deleteById(ticketId);
-            return new ResponseEntity<>(result,HttpStatus.GONE);
-        } catch (MessagingException e) {
-            String response = e.getMessage();
-            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
-        }
+    @PreAuthorize("hasRole('ADMIN')")
+//    PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
+    @GetMapping("/user/{userId}")
+    public ResponseEntity getAllByUser(@PathVariable("userId") @NotNull @Positive int userId){
+        List<TicketResponseDTO> tickets = ticketServiceImpl.getTicketsByUser(userId);
+        return new ResponseEntity<>(new ApiResponse<>("Ticket created successfully",true,new ResponseData<>(tickets)),HttpStatus.OK);
 
+    }
+    @DeleteMapping("/{ticketId}")
+    public ResponseEntity deleteById(@PathVariable("ticketId") @NotBlank int ticketId){
+        ticketServiceImpl.getTicketById(ticketId);
+        return new ResponseEntity<>(new ApiResponse<>("Ticket deleted successfully",true),HttpStatus.OK);
     }
 
     @PostMapping("/sendEMail")
     public ResponseEntity sendMail(){
         String result = null;
         try {
-            result = ticketService.sendEMail();
+            result = ticketServiceImpl.sendEMail();
             return new ResponseEntity<>(result,HttpStatus.ACCEPTED);
         } catch (MessagingException e) {
             String response = e.getMessage();
@@ -65,6 +58,10 @@ public class TicketController {
         }
     }
 
+    @GetMapping("/show/{showId}") // for admin
+    public ResponseEntity getTicketsByShow(@PathVariable int showId) {
+        List<TicketResponseDTO> tickets = ticketServiceImpl.getTicketsByShow(showId);
+        return new ResponseEntity<>(new ApiResponse<>("Ticket created successfully",true,new ResponseData<>(tickets)),HttpStatus.OK);
 
-
+    }
 }

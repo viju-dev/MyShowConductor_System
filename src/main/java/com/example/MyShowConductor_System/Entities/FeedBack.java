@@ -19,18 +19,19 @@ public class FeedBack {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // know the difference
     private int id;
 
-    @Column(nullable = false)
-    private String name;
+//    @Column(nullable = false)
+//    private String name;
 
-    @Column(nullable = false)
-    private String email;
+//    @Column(nullable = false)
+//    private String email;
 
     @Column(nullable = false)
     private String message;
 
+
     //ratings
     @Column(nullable = false)
-    private Double appRating;
+    private Double rating;
 
     @ManyToOne
     @JoinColumn

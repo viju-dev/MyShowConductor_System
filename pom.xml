@@ -5,9 +5,10 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.9</version>
+<!--		<version>2.7.9</version>-->
 <!--		use 3.0-->
-<!--		<version>3.2.2</version>-->
+<!--		3.2.2-->
+		<version>2.7.18</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
@@ -16,7 +17,9 @@
 	<name>MyShowConductor_System</name>
 	<description>MyShowConductor_System is system which help us to book tickets of shows</description>
 	<properties>
+<!--		-->
 		<java.version>1.8</java.version>
+<!--		<java.version>17</java.version>-->
 	</properties>
 	<dependencies>
 		<dependency>
@@ -82,6 +85,59 @@
 			<scope>runtime</scope>
 		</dependency>
 
+<!--		modelmapper-->
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>3.2.0</version>
+		</dependency>
+
+<!--		json and xml data response-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+		</dependency>
+
+<!--		for swagger-->
+		<!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+
+
+		<!--swagge for springboot 3 require sswaggerconfig https://www.baeldung.com/spring-rest-openapi-documentation-->
+<!--		<dependency>-->
+<!--			<groupId>org.springdoc</groupId>-->
+<!--			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>-->
+<!--			<version>2.2.0</version>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>io.springfox</groupId>-->
+<!--			<artifactId>springfox-boot-starter</artifactId>-->
+<!--			<version>3.0.0</version>-->
+<!--		</dependency>-->
+<!---->
+
+<!--for springboot 3 latest no need any other comfig only dependecy-->
+<!--		<dependency>-->
+<!--			<groupId>org.springdoc</groupId>-->
+<!--			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>-->
+<!--			<version>2.2.0</version>-->
+<!--		</dependency>-->
+
+<!--for springb oot 2.7. requires configs even for security-->
+<!--		<dependency>-->
+<!--			<groupId>io.springfox</groupId>-->
+<!--			<artifactId>springfox-swagger2</artifactId>-->
+<!--			<version>2.7.0</version>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>io.springfox</groupId>-->
+<!--			<artifactId>springfox-swagger-ui</artifactId>-->
+<!--			<version>2.7.0</version>-->
+<!--		</dependency>-->
 	</dependencies>
 
 	<build>

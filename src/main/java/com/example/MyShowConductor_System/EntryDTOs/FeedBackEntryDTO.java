@@ -2,18 +2,24 @@ package com.example.MyShowConductor_System.EntryDTOs;
 
 import lombok.Data;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.*;
 
 @Data
 public class FeedBackEntryDTO {
-    @NotBlank
-    private String name;
+//    @NotBlank
+//    private String name;
+//
+//    @NotBlank
+//    @Email
+//    private String email;
 
-    @NotBlank
-    @Email
-    private String email;
-
-    @NotBlank
+    @NotEmpty
     private String message;
+
+    @NotEmpty
+    @Min(value = 0)
+    @Max(value = 10)
+    private Double rating;
+
+
 }

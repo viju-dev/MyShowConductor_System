@@ -5,8 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,17 +13,29 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class TicketResponseDTO {
 
-    private String movieName;
-    private LocalDate showDate;
-    private LocalTime showTime;
-    private int totalAmount;
+//    private String movieName;
+//    private LocalDate showDate;
+//    private LocalTime showTime;
+
 //    private String transactionId;
 //    private boolean status;
-    private String ticketId;
-    private String theaterName;
-    private String bookedSeats;
+
+//    private String ticketId;
+//    private int totalAmount;
+////    private TheatreResponseDTO theatre;
+//    private List<ShowSeat> bookedSeats; // string or create showseatResponseDto
+//    private ShowResponseDTO show;
+//    private UserResponseDTO user;
 
 //    private User user;
 //
 //    private Show show;
+
+
+    private String ticketId;
+    private int totalAmount;
+    //    private TheatreResponseDTO theatre;
+    private List<ShowSeatResponseDto> bookedSeats; // string or create showseatResponseDto
+    private ShowResponseDTO show;
+    private UserResponseDTO user;
 }

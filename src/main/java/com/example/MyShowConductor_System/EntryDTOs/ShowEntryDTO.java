@@ -1,36 +1,34 @@
 package com.example.MyShowConductor_System.EntryDTOs;
 
-import com.example.MyShowConductor_System.Enums.FormatEnum;
+import com.example.MyShowConductor_System.Entities.Format;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 public class ShowEntryDTO {
-    @NotNull
+    @NotEmpty
     @FutureOrPresent
+    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate showDate;
     //not necessary by my opinion
-
+    @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime showTime;
 //    private ScreenTypeEnum screenType;
 //    private List<ScreenTypeEnum> screenType ;
-    @NotNull(message = "screenTypes can't be null")
-    @Enumerated(value = EnumType.STRING)
-    private FormatEnum[] formats;
+    @NotEmpty(message = "screenTypes can't be null")
+//    @Enumerated(value = EnumType.STRING)
+    private FormatEntryDto format; // one show one format
 
-    @NotNull(message = "movie can't be null")
+    @NotEmpty(message = "movie can't be null")
     @Min(value = 0,message = "movieId can't be negative")
     private int movieId;
 
-    @NotNull(message = "theatre can't be null")
+    @NotEmpty(message = "theatre can't be null")
     @Min(value = 0,message = "theatreId can't be negative")
     private int theatreId;
 
@@ -41,4 +39,6 @@ public class ShowEntryDTO {
 
     @Positive(message = "seat price should be positive")
     private int premiumSeatPrice;
+
+//    so instead of showseat prces are mentioned here ofcourse pricing are depends on show
 }

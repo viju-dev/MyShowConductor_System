@@ -1,145 +1,53 @@
 package com.example.MyShowConductor_System.Services;
 
-import com.example.MyShowConductor_System.Converters.MovieConvertors;
+import com.example.MyShowConductor_System.Entities.Format;
+import com.example.MyShowConductor_System.Entities.Genre;
+import com.example.MyShowConductor_System.Entities.Language;
+import com.example.MyShowConductor_System.EntryDTOs.FormatEntryDto;
+import com.example.MyShowConductor_System.EntryDTOs.GenreEntryDto;
+import com.example.MyShowConductor_System.EntryDTOs.LanguageEntryDto;
 import com.example.MyShowConductor_System.EntryDTOs.MovieEntryDTO;
-import com.example.MyShowConductor_System.Entities.Movie;
-import com.example.MyShowConductor_System.Entities.Show;
-import com.example.MyShowConductor_System.Entities.ShowSeat;
-import com.example.MyShowConductor_System.Repositories.MovieRepository;
-import com.example.MyShowConductor_System.Repositories.ShowRepository;
+import com.example.MyShowConductor_System.Enums.FormatEnum;
+import com.example.MyShowConductor_System.Enums.LanguagesEnum;
+import com.example.MyShowConductor_System.Enums.MovieGenreEnum;
 import com.example.MyShowConductor_System.ResponseDTOs.MovieResponseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-@Service
-public class MovieService {
-    @Autowired
-    MovieRepository movieRepository;
-    @Autowired
-    ShowRepository showRepository;
-    @Autowired
-    JavaMailSender javaMailSender;
+public interface MovieService {
+//    basic methods
+     MovieResponseDTO createMovie(MovieEntryDTO movieEntryDTO) ;
 
-    public String addMovie(MovieEntryDTO movieEntryDTO) throws Exception {
-        Movie movie = MovieConvertors.convertEntryDtoToEntity(movieEntryDTO);
-        movieRepository.save(movie);
+     MovieResponseDTO updateMovie(MovieEntryDTO movieEntryDTO, int movieId) ;
 
-        return "Movie Added Successfully;";
-    }
+     MovieResponseDTO getMovieById(int movieId) ;
 
-    public MovieResponseDTO getById(int id){
-        return MovieConvertors.convertDtoToResponse(movieRepository.findById(id).get());
-    }
+    public List<MovieResponseDTO> getAll();
 
-    public MovieResponseDTO getByName(String name){
-        return MovieConvertors.convertDtoToResponse(movieRepository.findByTitle(name));
-    }
-
-    public List<MovieResponseDTO> getByLanguages(String languages){
-      //  return movieRepository.findByLanguages(languages); //Collections.singletonList(languages) //used to convert string to array
-
-        String[] language = languages.split(",");
-        List<Movie> movieList = movieRepository.findAll();
-        List<MovieResponseDTO> ans = new ArrayList<>();
-        for (Movie movie:movieList){
-            for (String lang:language){
-                String movieLang = movie.getLanguages();
-                if (movieLang.contains(lang)){
-                    ans.add(MovieConvertors.convertDtoToResponse(movie));
-                }
-            }
-        }
-        return ans;
-    }
-
-    public List<MovieResponseDTO> getByGenre(String genres){ //list of enums?
-        String[] genre = genres.split(",");
-        List<Movie> movieList = movieRepository.findAll();
-        List<MovieResponseDTO> ans = new ArrayList<>();
-        for (Movie movie:movieList){
-            for (String genr:genre){
-                String movieGenre = movie.getGenres();
-                if (movieGenre.contains(genr)){
-                    ans.add(MovieConvertors.convertDtoToResponse(movie));
-                }
-            }
-        }
-        return ans;
-    }
-
-//    public ResponseEntity getByFormat( String screenType){
-//        return new ResponseEntity<>(HttpStatus.FOUND);
-//    }
-
-    public List<MovieResponseDTO> getAll(){
-        List<MovieResponseDTO> movieResponseDTOList = new ArrayList<>();
-        for (Movie movie: movieRepository.findAll()){
-            movieResponseDTOList.add( MovieConvertors.convertDtoToResponse(movie));
-        }
-        return movieResponseDTOList;
-    }
-    public Movie getTopMovie() {
-        Movie movie = new Movie();
-        return movie;
-    }
-    public String getByMaxShows() {
-        int movieId = showRepository.getMovieByMax();
-        String movieName=movieRepository.findById(movieId).get().getTitle();
-        return movieName;
-    }
-    public String editMovie(@RequestBody MovieEntryDTO movieEntryDTO){
-        movieRepository.save(MovieConvertors.convertEntryDtoToEntity(movieEntryDTO));
-        return "Movie Updated Successfully";
-    }
-    public String deleteById(int id){
-        movieRepository.deleteById(id);
-        return "Movie Deleted SuccessFully";
-    }
-    public String deleteByName(String name){
-        movieRepository.deleteByTitle(name);
-        return "Movie Deleted SuccessFully";
-    }
-    public String deleteAll(){
-        movieRepository.deleteAll();
-        return "All Movies Are Deleted successFully";
-    }
+    public String deleteMovieById(int id);
+    //    public String deleteByName(String name); // as their might be multiple movies with same name
+    public String deleteAll();
 
 
-    public long getCollectionByMovie(String movieName) {
-        int movieId = movieRepository.findByTitle(movieName).getId();
-        long total = 0;
-        for (Show show:showRepository.findAllByMovieId(movieId)){//iterate on show
-            for (ShowSeat showSeat:show.getShowSeatList()){//showSeatList by show
-                if (showSeat.isBooked()){
-                    total += showSeat.getPrice();//checked whether ticket were book or not  if its add price in total
-                }
-            }
-        }
-        return total;
-    }
+//    additional methods
+    public List<MovieResponseDTO> getMoviesByName(String name);
+    public List<MovieResponseDTO> getMoviesByLanguages(List<LanguagesEnum> languages);
+    public List<MovieResponseDTO> getMoviesByGenres(List<MovieGenreEnum> genres);
 
-    public void sendMail(String email,String text,String subject) throws MessagingException {
-        //  String body = "Hi this is to confirm your booking for seat No "+allotedSeats +"for the movie : " + ticketEntity.getMovieName();
+    public List<MovieResponseDTO> getMoviesByFormats( List<FormatEnum> formats);
+    public List<MovieResponseDTO> getTopMovies();//toprated movie or mayble top_5_movies() // or maybe whose rating greater than 9
+    public List<MovieResponseDTO> getMovieByMaxShows(); // we'll return dto instead of string
+
+    public long getCollectionByMovie(int movieId); // we'll return dto instead of string'
 
 
-        MimeMessage mimeMessage=javaMailSender.createMimeMessage();
-        MimeMessageHelper mimeMessageHelper=new MimeMessageHelper(mimeMessage,true);
-        mimeMessageHelper.setFrom("myshowconductor@gmail.com");
-        mimeMessageHelper.setTo("demonslayergaming9@gmail.com");
-//        mimeMessageHelper.setText("you got my message");
-        mimeMessageHelper.setText("my text <img src='cid:myLogo'>", true);
-        mimeMessageHelper.setSubject("Confirming your booked Ticket");
+//    different methods
+    public void sendMail(String email,String text,String subject) throws MessagingException;
 
-        javaMailSender.send(mimeMessage);
-    }
 
+//    additional methods that fullfill attribute absense in response
+//    public List<Show> getShowsByMovie(int movieId);
 
 }

@@ -1,11 +1,12 @@
 package com.example.MyShowConductor_System.EntryDTOs;
 
+import com.example.MyShowConductor_System.Entities.ShowSeat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +16,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TicketEntryDTO {
-    @NotNull
+    @NotEmpty
     @Positive
     private int showId;
-    @NotNull
+
+    @NotEmpty
     @Positive
-    private List<String> requestedSeats = new ArrayList<>();
-    @NotNull
+    private List<ShowSeat> requestedSeats = new ArrayList<>();
+//    private List<String> requestedSeats = new ArrayList<>();
+
+    @NotEmpty
     @Positive
     private int userId;
 }
