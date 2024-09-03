@@ -43,9 +43,11 @@
 - Show
 - Show_Seat
 - Ticket
+- and other as per below diagram
 
 ### MySql Schema(Tables Design) :
-![MyShowConductor_Schema_1](https://github.com/viju-dev/MyShowConductor_System/assets/71461702/380157eb-cac7-4d76-b43c-fdb6ec9312c1)
+<!-- ![MyShowConductor_Schema_1](https://github.com/viju-dev/MyShowConductor_System/assets/71461702/380157eb-cac7-4d76-b43c-fdb6ec9312c1) -->
+![Screenshot 2024-05-30 003504](https://github.com/user-attachments/assets/c64f7106-c13b-4062-b17a-05017c6ddf90)
 
 
 
@@ -102,6 +104,8 @@
         Update User Location by Mobile Number
         Get All Users
         Delete User by ID
+
+    Other various Operational models and APIs...
 
 
 ### Ticket Booking mail sent by system
