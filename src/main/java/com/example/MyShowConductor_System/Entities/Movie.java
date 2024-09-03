@@ -22,31 +22,18 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false) // unique = true, it cant be unique as their can be multiple movies with same name
+    @Column(nullable = false)
     private String title;
-
-//    @Enumerated(EnumType.STRING) // in double
+    
     private Double rating;
 
-//    private String image;
-//    @Column(nullable = false)
-//    private String formats;
+    private String image;
 
     @Column(nullable = false)
     private int duration;
-//private string description
 
-//    @Column(nullable = false)
-//    private String genres;
-
-//    @Enumerated(EnumType.STRING) // ued to get enum value as string another one to get index of that value in integer
-    //private LanguagesEnum languages;
-
-//    @Column(nullable = false)
-//    private String languages; // used languages coz we cant store enumarray or other array in database
-//    private LanguagesEnum[] languages  ={LanguagesEnum.HINDI,LanguagesEnum.ENGLISH};
-
-
+    @Column(nullable = false)
+    private String description;
 
 //    Mapping for enum enities
     @ManyToMany

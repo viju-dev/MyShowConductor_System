@@ -3,6 +3,7 @@ package com.example.MyShowConductor_System.Services;
 import com.example.MyShowConductor_System.Entities.Format;
 import com.example.MyShowConductor_System.Entities.Genre;
 import com.example.MyShowConductor_System.Entities.Language;
+import com.example.MyShowConductor_System.Entities.Movie;
 import com.example.MyShowConductor_System.EntryDTOs.FormatEntryDto;
 import com.example.MyShowConductor_System.EntryDTOs.GenreEntryDto;
 import com.example.MyShowConductor_System.EntryDTOs.LanguageEntryDto;
@@ -23,6 +24,7 @@ public interface MovieService {
      MovieResponseDTO updateMovie(MovieEntryDTO movieEntryDTO, int movieId) ;
 
      MovieResponseDTO getMovieById(int movieId) ;
+    public Movie getMovieEntityById(int id);
 
     public List<MovieResponseDTO> getAll();
 

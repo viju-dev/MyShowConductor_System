@@ -24,15 +24,6 @@ public class Format {
     private FormatEnum name;
 
 
-//    mappings
-//    @OneToOne(mappedBy = "format")
-//    private Show show;
-
-
-//    @OneToOne(mappedBy = "format",fetch = FetchType.LAZY)
-//    private Show show;
-//Unexpected Exception occur:More than one row with the given identifier was found: 1, for class: com.example.MyShowConductor_System.Entities.Show; nested exception is org.hibernate.HibernateException: More than one row with the given identifier was found: 1, for class: com.example.MyShowConductor_System.Entities.Show
-//removing mapping from fomrat or cahnged mapping to below solve this
     @OneToMany(mappedBy = "format")//fetch = FetchType.LAZY
     private List<Show> shows;
 

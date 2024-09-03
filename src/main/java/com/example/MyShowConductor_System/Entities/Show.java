@@ -42,18 +42,12 @@ public class Show {
     @UpdateTimestamp
     private Date updatedOn;
 
-//    @Enumerated(EnumType.STRING)
-//    private ScreenTypeEnum screenType;
-//    @Column(nullable = false)
-//    private String formats;
 
 //    Mapping enum entities
 
-//    @OneToMany(mappedBy ="show", cascade=CascadeType.ALL)
-//    private List<Format> formats = new ArrayList<>();
-//    @OneToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE})// fetch = FetchType.LAZY
-//    @JoinColumn
-//    private Format format;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "language_id")
+    private Language language;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "format_id")

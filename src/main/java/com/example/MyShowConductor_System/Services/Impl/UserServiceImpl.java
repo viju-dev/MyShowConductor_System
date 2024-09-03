@@ -61,6 +61,16 @@ public class UserServiceImpl implements UserService {
         UserResponseDTO result = this.modelMapper.map(user,UserResponseDTO.class);
         return result;
     }
+    @Override
+    public User getUserEntityById(int id) {
+        return userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("User","id",Integer.toString(id)));
+    }
+
+    @Override
+    public User getUserEntityByEmail(String email){
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("User","id",email));
+        return user;
+    };
 
     @Override
     public String deleteUser(int id) throws RuntimeException {

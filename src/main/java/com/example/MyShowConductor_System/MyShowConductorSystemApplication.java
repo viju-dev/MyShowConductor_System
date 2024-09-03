@@ -50,7 +50,7 @@ public class MyShowConductorSystemApplication implements CommandLineRunner {//ht
 	Logger logger = LoggerFactory.getLogger(MyShowConductorSystemApplication.class);
 
 	@Override
-	public void run(String... args) throws Exception {
+	public void run(String... args) throws Exception { // added in separate entities as mysql dont support arrays.
 		try{
 //			for roles
 			for(UserRoleEnum role:UserRoleEnum.values()){ //  if (!roleRepository.existsById(role.ordinal() + 1)) {

@@ -36,7 +36,6 @@ public class ShowSeat {
 
     private Date bookedAt;
 
-
 //    Mapping ShowSeat -> Ticket
     @ManyToOne
     @JoinColumn

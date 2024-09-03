@@ -67,6 +67,12 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    public Movie getMovieEntityById(int id){
+        return movieRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("movie","id",Integer.toString(id)));
+    }
+
+
+    @Override
     public List<MovieResponseDTO> getMoviesByName(String name){ // ad method name.contains(animal) spo it can show animal 2 as well
         // diff types of query methods
         List<Movie> movies = movieRepository.findByTitle(name); //what if i use stream on emty list would it thow error ?

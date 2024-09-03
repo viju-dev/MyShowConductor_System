@@ -1,11 +1,9 @@
 package com.example.MyShowConductor_System.Services.Impl;
 
 import com.example.MyShowConductor_System.EntryDTOs.TicketEntryDTO;
+import com.example.MyShowConductor_System.Enums.TicketStatusEnum;
 import com.example.MyShowConductor_System.Exceptions.ResourceNotFoundException;
-import com.example.MyShowConductor_System.Repositories.ShowRepository;
-import com.example.MyShowConductor_System.Repositories.TheatreRepository;
-import com.example.MyShowConductor_System.Repositories.TicketRepository;
-import com.example.MyShowConductor_System.Repositories.UserRepository;
+import com.example.MyShowConductor_System.Repositories.*;
 import com.example.MyShowConductor_System.Entities.Show;
 import com.example.MyShowConductor_System.Entities.ShowSeat;
 import com.example.MyShowConductor_System.Entities.Ticket;
@@ -13,17 +11,22 @@ import com.example.MyShowConductor_System.Entities.User;
 import com.example.MyShowConductor_System.ResponseDTOs.ShowResponseDTO;
 import com.example.MyShowConductor_System.ResponseDTOs.TicketResponseDTO;
 import com.example.MyShowConductor_System.Services.TicketService;
+import com.example.MyShowConductor_System.Services.TransactionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,11 +35,15 @@ public class TicketServiceImpl implements TicketService {
     @Autowired
     TicketRepository ticketRepository;
     @Autowired
-    UserRepository userRepository;
+    private UserServiceImpl userServiceImpl;
     @Autowired
-    TheatreRepository theatreRepository;
+    private ShowServiceImpl showServiceImpl;
+
     @Autowired
     ShowRepository showRepository;
+    @Autowired
+    TransactionService transactionService;
+
     @Autowired
     JavaMailSender javaMailSender;
 
@@ -50,22 +57,26 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<TicketResponseDTO> getTicketsByUser(int userId) {
-        User user = userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("user","id",Integer.toString(userId)));
+        User user = userServiceImpl.getUserEntityById(userId);
         List<TicketResponseDTO> ticketList = ticketRepository.findAll().stream().filter(ticket -> ticket.getUser().equals(ticket)).map(ticket -> this.modelMapper.map(ticket,TicketResponseDTO.class)).collect(Collectors.toList());
         return ticketList;
     }
 
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
     @Override
-    public TicketResponseDTO createTicket(TicketEntryDTO ticketEntryDTO) throws MessagingException {
+    public TicketResponseDTO createTicket(TicketEntryDTO ticketEntryDTO) {
         Ticket ticket = new Ticket();
-        User user = userRepository.findById(ticketEntryDTO.getUserId()).orElseThrow(()->new ResourceNotFoundException("user","id",Integer.toString(ticketEntryDTO.getUserId())));
+        User user = userServiceImpl.getUserEntityById(ticketEntryDTO.getUserId());
         ticket.setUser(user);
-        Show show = showRepository.findById(ticketEntryDTO.getShowId()).orElseThrow(()->new ResourceNotFoundException("user","id",Integer.toString(ticketEntryDTO.getShowId())));
+        Show show = showServiceImpl.getShowEntityById(ticketEntryDTO.getShowId());
         ticket.setShow(show);
 
         ticket.setTicketId(UUID.randomUUID().toString());
 //        ticket.setTransactionId(UUID.randomUUID().toString());
 //        ticket.setStatus(true);
+
+//        ticket staus set to pending
+        ticket.setStatus(TicketStatusEnum.PENDING);
 
         List<ShowSeat> confirmSeats = new ArrayList<>();
         int totalPrice = 0;
@@ -105,14 +116,24 @@ public class TicketServiceImpl implements TicketService {
         showRepository.save(show); //no need to save tickets
         Ticket savedTicket = ticketRepository.save(ticket);
 
-        mailServiceImpl.sendBookingMail(ticket, show);
+
+        //created transaction its not confirmed yet
+        transactionService.createTransaction(savedTicket);
+//
+//        mailServiceImpl.sendBookingMail(ticket, show);
+
         return this.modelMapper.map(savedTicket,TicketResponseDTO.class);
 
     }
 
+
+
+
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
     @Override
     public String deleteTicketById(String ticketId) throws MessagingException {
-        Ticket ticket = ticketRepository.findByTicketId(ticketId);
+        Ticket ticket = ticketRepository.findByTicketId(ticketId).orElseThrow(() -> new ResourceNotFoundException("Ticket", "id", ticketId));
         int totalPrice = ticket.getTotalAmount();
         List<ShowSeat> seats = ticket.getBookedSeats();
         for(ShowSeat seat : seats){
@@ -148,6 +169,23 @@ public class TicketServiceImpl implements TicketService {
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(()->new ResourceNotFoundException("ticket","id",Integer.toString(ticketId)));
         return this.modelMapper.map(ticket,TicketResponseDTO.class);
     }
+    @Override
+    public Ticket getTicketEntityById(String ticketId) {
+        Ticket ticket = ticketRepository.findByTicketId(ticketId).orElseThrow(()->new ResourceNotFoundException("ticket","id",ticketId));
+        return ticket;
+    }
+
+    @Override
+    public Ticket saveTicket(Ticket ticket) {
+        return ticketRepository.save(ticket);
+    }
+
+    @Override
+    public List<Ticket> findByStatus(TicketStatusEnum status) {
+        return ticketRepository.findByStatus(status);
+    }
+
+
 
 
     @Override
@@ -187,7 +225,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<TicketResponseDTO> getTicketsByShow(int showId) {
-        Show show = showRepository.findById(showId).orElseThrow(()-> new ResourceNotFoundException("show","id",Integer.toString(showId)));
+        Show show = showServiceImpl.getShowEntityById(showId);
         List<TicketResponseDTO> tickets = show.getTicketList().stream().map(ticket -> this.modelMapper.map(ticket,TicketResponseDTO.class)).collect(Collectors.toList());
         return tickets;
     }

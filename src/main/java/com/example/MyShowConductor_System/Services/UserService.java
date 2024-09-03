@@ -20,6 +20,8 @@ public interface UserService extends UserDetailsService {
     public UserResponseDTO updateUser(UserEntryDTO userEntryDTO, Integer userId);
 
     public UserResponseDTO getUserById(int id) ;
+    public User getUserEntityById(int id);
+    public User getUserEntityByEmail(String email);
 
     public List<UserResponseDTO> getALl();
 

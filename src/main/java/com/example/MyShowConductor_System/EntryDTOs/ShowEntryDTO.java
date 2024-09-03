@@ -24,6 +24,9 @@ public class ShowEntryDTO {
 //    @Enumerated(value = EnumType.STRING)
     private FormatEntryDto format; // one show one format
 
+    @NotEmpty(message = "Languages can't be null")
+    private LanguageEntryDto language; // one show one language
+
     @NotEmpty(message = "movie can't be null")
     @Min(value = 0,message = "movieId can't be negative")
     private int movieId;

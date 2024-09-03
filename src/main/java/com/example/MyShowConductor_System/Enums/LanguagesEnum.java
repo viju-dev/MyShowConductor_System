@@ -4,5 +4,7 @@ public enum LanguagesEnum {
     ENGLISH,
     HINDI,
     MARATHI,
-    TELUGU
+    TELUGU,
+    TAMIL,
+    JAPANESE
 }

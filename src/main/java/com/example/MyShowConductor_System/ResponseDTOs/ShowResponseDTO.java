@@ -26,6 +26,7 @@ public class ShowResponseDTO {
 //    private ScreenTypeEnum screenType;
 //     List<Format> formats = new ArrayList<>(); /// i guess one show can have only one format as it related to one screen
     private FormatResponseDto format;
+    private LanguageResponseDto language;
     private MovieResponseDTO movie;
     private TheatreResponseDTO theatre;
     private List<ShowSeatResponseDto> showSeatList;

@@ -16,13 +16,13 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionStatus {
+public class TransactionStatus { // not required
     @Id
     private int id;
 
     @Enumerated(EnumType.STRING)
     private TransactionStatusEnum name;
 
-    @OneToMany(mappedBy = "transactionStatus")
-    private List<Transaction> transactions;
+//    @OneToMany(mappedBy = "transactionStatus")
+//    private List<Transaction> transactions;
 }

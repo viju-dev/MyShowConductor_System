@@ -9,7 +9,7 @@ import com.example.MyShowConductor_System.Payloads.ApiResponse;
 import com.example.MyShowConductor_System.Payloads.ResponseData;
 import com.example.MyShowConductor_System.Repositories.UserRepository;
 import com.example.MyShowConductor_System.ResponseDTOs.UserResponseDTO;
-import com.example.MyShowConductor_System.Services.Impl.UserServiceImpl;
+import com.example.MyShowConductor_System.Services.UserService;
 import com.example.MyShowConductor_System.security.JwtHelper;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -24,11 +24,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import com.example.MyShowConductor_System.Validators.EmailValidator;
 
-import javax.validation.Valid;
 import java.security.Principal;
-import java.util.Optional;
 
 @Validated
 @RestController
@@ -41,34 +38,17 @@ public class AuthController {
     private AuthenticationManager manager;
 
     @Autowired
-    private UserServiceImpl userServiceImpl;
+    private UserService userService;
 
     @Autowired
     private JwtHelper helper;
+    @Autowired
+    private UserRepository userRepo;
+    @Autowired
+    private ModelMapper mapper;
 
     private Logger logger = LoggerFactory.getLogger(AuthController.class);
-//try {
-//
-//        // Authentication logic
-//        this.doAuthenticate(request.getEmail(), request.getPassword());
-//
-//        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
-//        String token = this.helper.generateToken(userDetails);
-//
-//        JwtResponse response = JwtResponse.builder()
-//                .jwtToken(token)
-//                .username(userDetails.getUsername()).build();
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//    } catch (BadCredentialsException e) {
-//        // Handle authentication failure
-//        return new ResponseEntity<>("Invalid Username or Password", HttpStatus.UNAUTHORIZED);
-//    } catch (Exception e) {
-//        return new ResponseEntity<>("An error occurred during login", HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
-// if (!EmailValidator.isValidEmail(request.getEmail())){
-//        throw new BadCredentialsException("Invalid Email...!!");
-//    }
-    // All apis who are not authenticated
+
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> createToken(@RequestBody JwtRequest request){
@@ -80,20 +60,20 @@ public class AuthController {
 
         JwtResponse jwtAuthResponse = new JwtResponse();
         jwtAuthResponse.setJwtToken(token);
+        jwtAuthResponse.setUsername(request.getEmail());
         return new ResponseEntity<JwtResponse>(jwtAuthResponse, HttpStatus.OK);
     }
 
     private void authenticate(String username, String password) {
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-//        this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);//badcreadentils exception handlin
         System.out.println(usernamePasswordAuthenticationToken);
         try {
 
             this.manager.authenticate(usernamePasswordAuthenticationToken);
 
         } catch (BadCredentialsException e) {
-            System.out.println("Invalid Detials !!");
+            System.out.println("Invalid Details !!");
             throw new ApiException("Invalid username or password !!");
         }
     }
@@ -101,15 +81,11 @@ public class AuthController {
     //    register new user api
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> registerUser(@RequestBody UserEntryDTO user){
-        UserResponseDTO userDto = this.userServiceImpl.registerUser(user);
+        UserResponseDTO userDto = this.userService.registerUser(user);
         return new ResponseEntity<ApiResponse>(new ApiResponse("user registered ",true,new ResponseData(userDto)),HttpStatus.CREATED);
     }
 
     // get loggedin user data
-    @Autowired
-    private UserRepository userRepo;
-    @Autowired
-    private ModelMapper mapper;
 
     @GetMapping("/current-user/")
     public ResponseEntity<UserResponseDTO> getUser(Principal principal) {

@@ -25,37 +25,25 @@ public class TicketController {
     @Autowired
     TicketServiceImpl ticketServiceImpl;
 
-//    @PreAuthorize("hasRole('USER')") both  can create
     @PostMapping("/create")//name as createTicket
-    public ResponseEntity addTicket(@RequestBody TicketEntryDTO ticketEntryDTO) throws MessagingException {
-        TicketResponseDTO ticket = ticketServiceImpl.createTicket(ticketEntryDTO);
+    public ResponseEntity addTicket(@RequestBody TicketEntryDTO ticketEntryDto) {
+        TicketResponseDTO ticket = ticketServiceImpl.createTicket(ticketEntryDto);
         return new ResponseEntity<>(new ApiResponse<>("Ticket created successfully",true,new ResponseData<>(ticket)),HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-//    PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
+    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
     @GetMapping("/user/{userId}")
     public ResponseEntity getAllByUser(@PathVariable("userId") @NotNull @Positive int userId){
         List<TicketResponseDTO> tickets = ticketServiceImpl.getTicketsByUser(userId);
         return new ResponseEntity<>(new ApiResponse<>("Ticket created successfully",true,new ResponseData<>(tickets)),HttpStatus.OK);
 
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{ticketId}")
     public ResponseEntity deleteById(@PathVariable("ticketId") @NotBlank int ticketId){
         ticketServiceImpl.getTicketById(ticketId);
         return new ResponseEntity<>(new ApiResponse<>("Ticket deleted successfully",true),HttpStatus.OK);
-    }
-
-    @PostMapping("/sendEMail")
-    public ResponseEntity sendMail(){
-        String result = null;
-        try {
-            result = ticketServiceImpl.sendEMail();
-            return new ResponseEntity<>(result,HttpStatus.ACCEPTED);
-        } catch (MessagingException e) {
-            String response = e.getMessage();
-            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
-        }
     }
 
     @GetMapping("/show/{showId}") // for admin

@@ -30,10 +30,9 @@ public class TheatreServiceImpl implements TheatreService {
 
     @Autowired
     TheatreSeatRepository theatreSeatRepository;
+
     @Autowired
-    ShowRepository showRepository;
-    @Autowired
-    MovieRepository movieRepository;
+    MovieServiceImpl movieServiceImpl;
 
     @Autowired
     FormatRepository formatRepository;
@@ -126,6 +125,10 @@ public class TheatreServiceImpl implements TheatreService {
         List<TheatreResponseDTO> theatreList = theatres.stream().map(theatre -> this.modelMapper.map(theatre,TheatreResponseDTO.class)).collect(Collectors.toList());
         return theatreList;
     }
+    @Override
+    public List<Theatre> getAllTheatreEntities() {
+        return theatreRepository.findAll();
+    }
 
     @Override
     public TheatreResponseDTO getTheatreById(int theatreId) {
@@ -134,8 +137,13 @@ public class TheatreServiceImpl implements TheatreService {
     }
 
     @Override
+    public Theatre getTheatreEntityById(int theatreId) {
+        return theatreRepository.findById(theatreId).orElseThrow(()-> new ResourceNotFoundException("theatre","id",Integer.toString(theatreId)));
+    }
+
+    @Override
     public List<TheatreShowsResponseDTO> getTheatresByLocationAndMovie(String location, int movieId) {
-        Movie movie = movieRepository.findById(movieId).orElseThrow(()-> new ResourceNotFoundException("movie","id",Integer.toString(movieId)));
+        Movie movie = movieServiceImpl.getMovieEntityById(movieId);
         List<Show> shows = movie.getMovieShowList();
         Set<Theatre> theatres = shows.stream().map(show -> show.getTheatre()).collect(Collectors.toSet());
         List<TheatreShowsResponseDTO> result = theatres.stream().map(theatre -> this.modelMapper.map(theatre,TheatreShowsResponseDTO.class)).collect(Collectors.toList());
@@ -145,7 +153,7 @@ public class TheatreServiceImpl implements TheatreService {
 
     @Override
     public List<TheatreResponseDTO> getTheatresByMovie(int movieId) {
-        Movie movie = movieRepository.findById(movieId).orElseThrow(()-> new ResourceNotFoundException("movie","id",Integer.toString(movieId)));
+        Movie movie = movieServiceImpl.getMovieEntityById(movieId);
         List<Show> shows = movie.getMovieShowList();
         List<TheatreResponseDTO> result = shows.stream().map(show -> show.getTheatre()).map(theatre -> this.modelMapper.map(theatre,TheatreResponseDTO.class)).collect(Collectors.toList());
         return result;
@@ -174,4 +182,6 @@ public class TheatreServiceImpl implements TheatreService {
         List<TheatreSeatResponseDto> seats = theatre.getTheatreSeatList().stream().map(seat -> this.modelMapper.map(seat,TheatreSeatResponseDto.class)).collect(Collectors.toList());
         return seats;
     }
+
+
 }

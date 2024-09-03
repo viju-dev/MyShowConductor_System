@@ -8,4 +8,9 @@ public enum MovieGenreEnum {
     COMEDY,
     FAMILY,
     ADULT,
+    ADVENTURE,
+    DRAMA,
+    ROMANCE,
+    SPORT,
+    ANIME
 }

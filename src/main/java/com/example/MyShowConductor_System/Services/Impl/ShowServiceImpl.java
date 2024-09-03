@@ -27,10 +27,13 @@ import java.util.stream.Collectors;
 public class ShowServiceImpl implements ShowService {
     @Autowired
     ShowRepository showRepository;
+
+
     @Autowired
-    MovieRepository movieRepository;
+    private MovieServiceImpl movieServiceImpl;
+
     @Autowired
-    TheatreRepository theatreRepository;
+    private TheatreServiceImpl theatreServiceImpl;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -52,8 +55,8 @@ public class ShowServiceImpl implements ShowService {
 
         Show show = this.modelMapper.map(showEntryDTO,Show.class);
         show.setFormat(formatRepository.findByName(show.getFormat().getName()).orElseThrow(()-> new ResourceNotFoundException("format","name",show.getFormat().getName().name())));
-        Movie movie = movieRepository.findById(showEntryDTO.getMovieId()).orElseThrow(()-> new ResourceNotFoundException("movie","id",Integer.toString(showEntryDTO.getMovieId())));
-        Theatre theatre = theatreRepository.findById(showEntryDTO.getTheatreId()).orElseThrow(()-> new ResourceNotFoundException("theatre","id",Integer.toString(showEntryDTO.getTheatreId())));
+        Movie movie = movieServiceImpl.getMovieEntityById(showEntryDTO.getMovieId());
+        Theatre theatre = theatreServiceImpl.getTheatreEntityById(showEntryDTO.getTheatreId());
 
         //Setting the attribute of foreignKey
 //        https://sl.bing.net/fnCfT5BiIsm
@@ -107,6 +110,10 @@ public class ShowServiceImpl implements ShowService {
         Show show = showRepository.findById(showId).orElseThrow(()-> new ResourceNotFoundException("show","id",Integer.toString(showId)));
         return this.modelMapper.map(show,ShowResponseDTO.class);
     }
+    @Override
+    public Show getShowEntityById(Integer showId) {
+        return showRepository.findById(showId).orElseThrow(()-> new ResourceNotFoundException("show","id",Integer.toString(showId)));
+    }
 
     @Override
     public ShowResponseDTO updateShow(ShowEntryDTO showEntryDTO, int showId) {
@@ -141,8 +148,8 @@ public class ShowServiceImpl implements ShowService {
 
     @Override
     public List<ShowResponseDTO> getShowsByLocAndMovie(String location, int movieId) {
-        Movie movie = movieRepository.findById(movieId).orElseThrow(()-> new ResourceNotFoundException("movie","id",Integer.toString(movieId)));
-        List<Theatre> theatres = theatreRepository.findAll();
+        Movie movie = movieServiceImpl.getMovieEntityById(movieId);
+        List<Theatre> theatres = theatreServiceImpl.getAllTheatreEntities();
         List<ShowResponseDTO> result = theatres.stream().filter(theatre -> theatre.getLocation().equalsIgnoreCase(location)).flatMap(theatre -> theatre.getShowList().stream()).filter(show -> show.getMovie().equals(movie)).map(show -> this.modelMapper.map(show,ShowResponseDTO.class)).collect(Collectors.toList());
         return result;
     }
@@ -163,7 +170,7 @@ public class ShowServiceImpl implements ShowService {
 
     @Override
     public List<ShowResponseDTO> getShowsByMovie(int movieId) {
-        Movie movie = movieRepository.findById(movieId).orElseThrow(()->new ResourceNotFoundException("movie","id",Integer.toString(movieId)));
+        Movie movie = movieServiceImpl.getMovieEntityById(movieId);
         List<Show> shows = showRepository.findAll();
         List<ShowResponseDTO> result = shows.stream().filter(show -> show.getMovie().equals(movie)).map(show -> this.modelMapper.map(show,ShowResponseDTO.class)).collect(Collectors.toList());
         return result;
@@ -183,7 +190,7 @@ public class ShowServiceImpl implements ShowService {
     public List<ShowResponseDTO> getShowsByMovieAndDate(int movieId, String showDate) {
 //        findAllByMovieIdAndShowDate
         LocalDate localDate = LocalDate.parse(showDate);
-        Movie movie = movieRepository.findById(movieId).orElseThrow(()->new ResourceNotFoundException("movie","id",Integer.toString(movieId)));
+        Movie movie = movieServiceImpl.getMovieEntityById(movieId);
         List<ShowResponseDTO> result = this.showRepository.findAll().stream().filter(show -> show.getShowDate().equals(localDate) && show.getMovie().equals(movie)).map(show -> this.modelMapper.map(show,ShowResponseDTO.class)).collect(Collectors.toList());
         return result;
     }
@@ -191,7 +198,7 @@ public class ShowServiceImpl implements ShowService {
 
     @Override
     public List<ShowResponseDTO> getShowsByTheatre(int theatreId) {
-        Theatre theatre = theatreRepository.findById(theatreId).orElseThrow(()-> new ResourceNotFoundException("Theatre","id",Integer.toString(theatreId)));
+        Theatre theatre =  theatreServiceImpl.getTheatreEntityById(theatreId);
         List<ShowResponseDTO> result = showRepository.findAll().stream().filter(show -> show.getTheatre().equals(theatre)).map(show -> this.modelMapper.map(show,ShowResponseDTO.class)).collect(Collectors.toList());
         return result;
     }

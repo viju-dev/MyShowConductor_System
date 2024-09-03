@@ -68,7 +68,7 @@ public class SecurityConfiguration {
 //                        .antMatchers("/auth/login").permitAll()
 //                        .antMatchers("/auth/SignUp").permitAll()
 //                        .antMatchers("/movies/**").permitAll()
-                        .antMatchers(HttpMethod.POST).permitAll()
+//                        .antMatchers(HttpMethod.POST).permitAll()
 //                        .antMatchers("/theatres/**").permitAll()
 //                        .antMatchers("/shows/**").permitAll()
 //                        .antMatchers("/feedbacks/**").permitAll()

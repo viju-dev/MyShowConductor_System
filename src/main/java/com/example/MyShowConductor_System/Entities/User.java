@@ -2,10 +2,13 @@ package com.example.MyShowConductor_System.Entities;
 
 import com.example.MyShowConductor_System.Enums.GenderEnum;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -20,7 +23,7 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // know the differencw
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(nullable = false)
@@ -40,23 +43,22 @@ public class User implements UserDetails {
     private String password;
 
     private String address;
-//    private LocationEnum location; // idont think so its needed as its just temporary and can be changes everytime according to user so we'll store it in constant ok
 
     @Enumerated(EnumType.STRING)
-    private GenderEnum gender;  // optional attribute
+    private GenderEnum gender;
 
-//    @JsonFormat(pattern = "dd-MM-yyyy")
-//    private Date birthDate;
+    @CreationTimestamp
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
-//    private int age;
-
-//    private String location;
-
-    //    @Enumerated(EnumType.STRING)
-//    private UserRoleEnum userRole;
+    @UpdateTimestamp()
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
 
-//    maping for enum entities
+    private int age;
+
+
     @ManyToMany
     @JoinTable(
         name = "user_role",
@@ -87,16 +89,16 @@ public class User implements UserDetails {
     @Override
     public boolean isAccountNonExpired() {
         return true;
-    }//false
+    }
 
     @Override
     public boolean isAccountNonLocked() {
         return true;
-    }//false
+    }
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
-    }//false
+    }
 
     @Override
     public boolean isEnabled() {

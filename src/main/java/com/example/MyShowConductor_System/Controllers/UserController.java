@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.security.Principal;
 import java.util.List;
 //https://www.google.com/search?q=how+to+use+email+verification+in+spring+boot
 @RestController
@@ -36,10 +39,6 @@ public class UserController {
 //        UserEntryDTO u =(UserEntryDTO) auth.getPrincipal();
         return new ResponseEntity<>(new ApiResponse("user has been created",true,new ResponseData<>(result)), HttpStatus.CREATED);
 
-//        catch (Exception e){
-//            String response = "User not created";
-//            return new ResponseEntity<>(result,HttpStatus.BAD_REQUEST);
-//        }
     }
     @PutMapping("/")
     public ResponseEntity updateUser(@Valid @RequestBody UserEntryDTO userEntryDTO, @RequestParam(value = "userId") Integer userId){
@@ -98,6 +97,12 @@ public class UserController {
             String result = userServiceImpl.deleteUser(userId);
             return new ResponseEntity<>(new ApiResponse(result,true), HttpStatus.OK);
 
+    }
+
+    public String getCurrentUser(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Principal principal = (Principal) auth.getPrincipal();
+        return principal.getName();
     }
 
 

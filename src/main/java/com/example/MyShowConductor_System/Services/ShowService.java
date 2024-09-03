@@ -1,5 +1,6 @@
 package com.example.MyShowConductor_System.Services;
 
+import com.example.MyShowConductor_System.Entities.Show;
 import com.example.MyShowConductor_System.EntryDTOs.ShowEntryDTO;
 import com.example.MyShowConductor_System.ResponseDTOs.ShowResponseDTO;
 
@@ -9,6 +10,7 @@ public interface ShowService {
 //    basic methods
     public ShowResponseDTO createShow(ShowEntryDTO showEntryDTO);
     public ShowResponseDTO getShowById(Integer showId);
+    public Show getShowEntityById(Integer showId);
     public ShowResponseDTO updateShow(ShowEntryDTO showEntryDTO,int showId);
     public List<ShowResponseDTO> getAll();
     public String deleteShowById(Integer showId);

@@ -6,7 +6,6 @@ public class ApiException extends RuntimeException {
         super(message);
 
     }
-
     public ApiException() { // used in authcontroller login
         super();
 

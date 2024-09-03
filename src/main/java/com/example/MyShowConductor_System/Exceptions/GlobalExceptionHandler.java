@@ -23,7 +23,6 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-//https://sl.bing.net/cEEiQObYFA4
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse> resourceNotFoundExceptionHandler(ResourceNotFoundException ex){
@@ -51,9 +50,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
 
-
-//    @ExceptionHandler(value = {CannotCreateTransactionException.class})
-//    https://stackoverflow.com/questions/72665235/how-to-catch-connection-refused-exception-of-spring-boot-data-jpa
     @ExceptionHandler(CannotCreateTransactionException.class)
     public ResponseEntity<ApiResponse> cannotCreateTransactionExceptionHandler(CannotCreateTransactionException ex, WebRequest request) {
         if (ex.contains(ConnectException.class)) {
@@ -61,7 +57,6 @@ public class GlobalExceptionHandler {
             String message = "Database Server Down";
             return new ResponseEntity<>(new ApiResponse(message,false, new ResponseError<>(ex.getMessage())),HttpStatus.SERVICE_UNAVAILABLE);
         }else {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             return  new ResponseEntity<>(new ApiResponse("Internal Server Error",false,new ResponseError<>(ex.getMessage())),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -89,13 +84,5 @@ public class GlobalExceptionHandler {
 
 
 
-//    also add one for bad routing which is not exist
-//    beauty of the @ExceptionHandler and @RestControllerAdvice is we just have to define exception handler that will be called when the exception is thrown and will be handled by the exception handler automatically( we dont have to catch in service or even in controller as thrown exceptions will come in controoler at end and we all exceptions in controller are handled automatically)
 }
 
-//SQLIntegrityConstraintViolationException  if duplicate entries
-// SQLException  if database structure gone wrong or something like extra column created (Field 'user_id' doesn't have a default value)
-// RequestRejectedException
-//and we'll defne one excepetio that will be called if all this fails and give message unexoected error occur you can contact us
-//eg runtime at last or compiletime exception
-//also unknown exception and unexpected exception

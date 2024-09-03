@@ -21,7 +21,7 @@ public class TheatreSeat {
     private int id;
 
     @Column(nullable = false)
-    private String seatNo;//a12 b1 c23 maybe thats why seatNo is in string
+    private String seatNo;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

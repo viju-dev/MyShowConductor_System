@@ -2,6 +2,7 @@ package com.example.MyShowConductor_System.Services;
 
 import com.example.MyShowConductor_System.Entities.Ticket;
 import com.example.MyShowConductor_System.EntryDTOs.TicketEntryDTO;
+import com.example.MyShowConductor_System.Enums.TicketStatusEnum;
 import com.example.MyShowConductor_System.ResponseDTOs.TicketResponseDTO;
 import javax.mail.MessagingException;
 import java.util.List;
@@ -15,6 +16,14 @@ public interface TicketService {
     public String deleteTicketById(String ticketId)throws MessagingException;
 
     public TicketResponseDTO getTicketById(int ticketId);
+
+    // to use in other services
+    public Ticket getTicketEntityById(String ticketId);
+    public Ticket saveTicket(Ticket ticket);
+
+    public List<Ticket> findByStatus(TicketStatusEnum status);
+    //
+
     public List<TicketResponseDTO> getTicketsByUser(int userId);
 
 
